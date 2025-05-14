@@ -1,55 +1,48 @@
 import { Request, Response } from "express";
 import {
-    srvCreateCita,
-    srvDeleteCita,
-    srvGetCitaByID,
-    srvGetCitas,
-    srvGetCitasByPaciente,
-    srvGetCitasByProfesional,
-    srvUpdateCita,
-    srvUpdateEstadoCita
-} from "../services/cita.service";
+    srvGetAgendaProfesional,
+    srvGetHorariosDisponibles,
+} from "../services/agenda.service";
 
-export const getCitas = async (_: Request, res: Response) => {
-    const citas = await srvGetCitas();
-    res.json(citas);
+// OBTENER LA AGENDA DE UN PROFESIONAL POR RANGO DE FECHAS
+export const getAgendaProfesional = async (req: Request, res: Response) => {
+    const { idProfesional } = req.params;
+    const { fechaInicio, fechaFin } = req.query;
+
+    if (!fechaInicio || !fechaFin) {
+        return res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
+    }
+
+    try {
+        const agenda = await srvGetAgendaProfesional(
+            +idProfesional,
+            new Date(fechaInicio as string),
+            new Date(fechaFin as string)
+        );
+        res.status(200).json(agenda);
+    } catch (error: any) {
+        console.error('Error al obtener la agenda del profesional:', error.message);
+        if (error.message === 'Profesional no encontrado') {
+            return res.status(404).json({ message: error.message });
+        }
+        res.status(500).json({ message: 'Error interno del servidor al obtener la agenda.' });
+    }
 };
 
-export const getCita = async (req: Request, res: Response) => {
-    const cita = await srvGetCitaByID(+req.params.id);
-    if (!cita) return res.status(404).json({ message: "Cita no encontrada" });
-    res.json(cita);
-};
+// OBTENER LOS HORARIOS DISPONIBLES DE UN PROFESIONAL PARA UNA FECHA ESPECÍFICA
+export const getHorariosDisponibles = async (req: Request, res: Response) => {
+    const { idProfesional } = req.params;
+    const { fecha } = req.query;
 
-export const getCitasByPaciente = async (req: Request, res: Response) => {
-    const citas = await srvGetCitasByPaciente(+req.params.idPaciente);
-    res.json(citas);
-};
+    if (!fecha) {
+        return res.status(400).json({ message: 'Se debe proporcionar la fecha.' });
+    }
 
-export const getCitasByProfesional = async (req: Request, res: Response) => {
-    const citas = await srvGetCitasByProfesional(+req.params.idProfesional);
-    res.json(citas);
-};
-
-export const createCita = async (req: Request, res: Response) => {
-    const cita = await srvCreateCita(req.body);
-    res.status(201).json(cita);
-};
-
-export const updateCita = async (req: Request, res: Response) => {
-    const cita = await srvUpdateCita(+req.params.id, req.body);
-    if (!cita) return res.status(404).json({ message: "Cita no encontrada" });
-    res.json(cita);
-};
-
-export const updateEstadoCita = async (req: Request, res: Response) => {
-    const cita = await srvUpdateEstadoCita(+req.params.id, req.body.estado);
-    if (!cita) return res.status(404).json({ message: "Cita no encontrada" });
-    res.json(cita);
-};
-
-export const deleteCita = async (req: Request, res: Response) => {
-    const cita = await srvDeleteCita(+req.params.id);
-    if (!cita) return res.status(404).json({ message: "Cita no encontrada" });
-    res.json({ message: "Cita eliminada" });
+    try {
+        const horarios = await srvGetHorariosDisponibles(+idProfesional, new Date(fecha as string));
+        res.status(200).json(horarios);
+    } catch (error: any) {
+        console.error('Error al obtener los horarios disponibles:', error.message);
+        res.status(500).json({ message: 'Error interno del servidor al obtener los horarios disponibles.' });
+    }
 };
