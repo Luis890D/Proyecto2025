@@ -32,7 +32,7 @@ export const AppDataSource = new DataSource({
         HistorialCita]
 });
 
-export const connectDD = async () => {
+export const connectDB = async () => {
     try {
         await AppDataSource.initialize();
         console.log('Conectado a la base de datos');
