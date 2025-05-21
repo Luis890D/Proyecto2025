@@ -26,7 +26,7 @@ export const getUsuario = async (req: Request, res: Response) => {
     try {
         const usuario = await srvGetUsuarioByID(+idUsuario);
         if (!usuario) {
-            return res.status(404).json({ message: `No se encontró el usuario con ID ${idUsuario}` });
+             res.status(404).json({ message: `No se encontró el usuario con ID ${idUsuario}` });
         }
         res.status(200).json(usuario);
     } catch (error: any) {
@@ -54,7 +54,7 @@ export const updateUsuario = async (req: Request, res: Response) => {
     try {
         const usuarioActualizado = await srvUpdateUsuario(+idUsuario, req.body);
         if (!usuarioActualizado) {
-            return res.status(404).json({ message: `No se encontró el usuario con ID ${idUsuario}` });
+         res.status(404).json({ message: `No se encontró el usuario con ID ${idUsuario}` });
         }
         res.status(200).json(usuarioActualizado);
     } catch (error: any) {
@@ -69,7 +69,7 @@ export const deleteUsuario = async (req: Request, res: Response) => {
     try {
         const resultado = await srvDeleteUsuario(+idUsuario);
         if (!resultado) {
-            return res.status(404).json({ message: `No se encontró el usuario con ID ${idUsuario}` });
+             res.status(404).json({ message: `No se encontró el usuario con ID ${idUsuario}` });
         }
         res.status(200).json({ message: `Usuario con ID ${idUsuario} eliminado correctamente.` });
     } catch (error: any) {
@@ -84,7 +84,7 @@ export const getUsuarioByEmail = async (req: Request, res: Response) => {
     try {
         const usuario = await srvGetUsuarioByEmail(email);
         if (!usuario) {
-            return res.status(404).json({ message: `No se encontró el usuario con email ${email}` });
+             res.status(404).json({ message: `No se encontró el usuario con email ${email}` });
         }
         res.status(200).json(usuario);
     } catch (error: any) {

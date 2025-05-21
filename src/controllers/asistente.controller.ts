@@ -25,7 +25,7 @@ export const getAsistente = async (req: Request, res: Response) => {
         const asistente = await srvGetAsistenteByID(+idAsistente);
 
         if (!asistente) {
-            return res.status(404).json({ message: 'No se encontró el asistente con ID ' + idAsistente });
+             res.status(404).json({ message: 'No se encontró el asistente con ID ' + idAsistente });
         }
 
         res.status(200).json(asistente);
@@ -62,7 +62,7 @@ export const updateAsistente = async (req: Request, res: Response) => {
         const asistente = await srvGetAsistenteByID(+idAsistente);
 
         if (!asistente) {
-            return res.status(404).json({ message: 'No se encontró el asistente con ID ' + idAsistente });
+             res.status(404).json({ message: 'No se encontró el asistente con ID ' + idAsistente });
         }
 
         const asistenteActualizado = await srvUpdateAsistente(+idAsistente, updateData);
@@ -81,7 +81,7 @@ export const deleteAsistente = async (req: Request, res: Response) => {
         const asistente = await srvGetAsistenteByID(+idAsistente);
 
         if (!asistente) {
-            return res.status(404).json({ message: 'No se encontró el asistente con ID ' + idAsistente });
+         res.status(404).json({ message: 'No se encontró el asistente con ID ' + idAsistente });
         }
 
         await srvDeleteAsistente(+idAsistente);

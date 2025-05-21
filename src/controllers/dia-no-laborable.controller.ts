@@ -35,7 +35,7 @@ export const deleteDiaNoLaborable = async (req: Request, res: Response) => {
     try {
         const resultado = await srvDeleteDiaNoLaborable(+idDiaNoLaborable);
         if (!resultado) {
-            return res.status(404).json({ message: `No se encontró el día no laborable con ID ${idDiaNoLaborable}` });
+            res.status(404).json({ message: `No se encontró el día no laborable con ID ${idDiaNoLaborable}` });
         }
         res.status(200).json({ message: `Día no laborable con ID ${idDiaNoLaborable} eliminado correctamente.` });
     } catch (error: any) {
@@ -50,7 +50,7 @@ export const checkDiaNoLaborable = async (req: Request, res: Response) => {
     const { fecha } = req.query;
 
     if (!fecha) {
-        return res.status(400).json({ message: 'Se debe proporcionar la fecha a verificar.' });
+         res.status(400).json({ message: 'Se debe proporcionar la fecha a verificar.' });
     }
 
     try {

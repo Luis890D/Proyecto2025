@@ -27,7 +27,7 @@ export const getCita = async (req: Request, res: Response) => {
     try {
         const cita = await srvGetCitaByID(+idCita);
         if (!cita) {
-            return res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
+             res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
         }
         res.status(200).json(cita);
     } catch (error: any) {
@@ -77,7 +77,7 @@ export const updateCita = async (req: Request, res: Response) => {
     try {
         const citaActualizada = await srvUpdateCita(+idCita, req.body);
         if (!citaActualizada) {
-            return res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
+             res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
         }
         res.status(200).json(citaActualizada);
     } catch (error: any) {
@@ -93,7 +93,7 @@ export const updateEstadoCita = async (req: Request, res: Response) => {
     try {
         const citaActualizada = await srvUpdateEstadoCita(+idCita, estado);
         if (!citaActualizada) {
-            return res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
+             res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
         }
         res.status(200).json(citaActualizada);
     } catch (error: any) {
@@ -108,7 +108,7 @@ export const deleteCita = async (req: Request, res: Response) => {
     try {
         const resultado = await srvDeleteCita(+idCita);
         if (!resultado) {
-            return res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
+             res.status(404).json({ message: `No se encontró la cita con ID ${idCita}` });
         }
         res.status(200).json({ message: `Cita con ID ${idCita} eliminada correctamente.` });
     } catch (error: any) {

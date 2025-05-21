@@ -25,7 +25,7 @@ export const getDisponibilidad = async (req: Request, res: Response) => {
     try {
         const disponibilidad = await srvGetDisponibilidadByID(+idDisponibilidad);
         if (!disponibilidad) {
-            return res.status(404).json({ message: `No se encontró la disponibilidad con ID ${idDisponibilidad}` });
+             res.status(404).json({ message: `No se encontró la disponibilidad con ID ${idDisponibilidad}` });
         }
         res.status(200).json(disponibilidad);
     } catch (error: any) {
@@ -51,7 +51,7 @@ export const updateDisponibilidad = async (req: Request, res: Response) => {
     try {
         const disponibilidadActualizada = await srvUpdateDisponibilidad(+idDisponibilidad, req.body);
         if (!disponibilidadActualizada) {
-            return res.status(404).json({ message: `No se encontró la disponibilidad con ID ${idDisponibilidad}` });
+             res.status(404).json({ message: `No se encontró la disponibilidad con ID ${idDisponibilidad}` });
         }
         res.status(200).json(disponibilidadActualizada);
     } catch (error: any) {
@@ -66,7 +66,7 @@ export const deleteDisponibilidad = async (req: Request, res: Response) => {
     try {
         const resultado = await srvDeleteDisponibilidad(+idDisponibilidad);
         if (!resultado) {
-            return res.status(404).json({ message: `No se encontró la disponibilidad con ID ${idDisponibilidad}` });
+             res.status(404).json({ message: `No se encontró la disponibilidad con ID ${idDisponibilidad}` });
         }
         res.status(200).json({ message: `Disponibilidad con ID ${idDisponibilidad} eliminada correctamente.` });
     } catch (error: any) {

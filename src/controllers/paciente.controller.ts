@@ -25,7 +25,7 @@ export const getPaciente = async (req: Request, res: Response) => {
     try {
         const paciente = await srvGetPacienteByID(+idPaciente);
         if (!paciente) {
-            return res.status(404).json({ message: `No se encontró el paciente con ID ${idPaciente}` });
+             res.status(404).json({ message: `No se encontró el paciente con ID ${idPaciente}` });
         }
         res.status(200).json(paciente);
     } catch (error: any) {
@@ -40,7 +40,7 @@ export const getPacienteByDPI = async (req: Request, res: Response) => {
     try {
         const paciente = await srvGetPacienteByDPI(dpi);
         if (!paciente) {
-            return res.status(404).json({ message: `No se encontró el paciente con DPI ${dpi}` });
+             res.status(404).json({ message: `No se encontró el paciente con DPI ${dpi}` });
         }
         res.status(200).json(paciente);
     } catch (error: any) {
@@ -66,7 +66,7 @@ export const updatePaciente = async (req: Request, res: Response) => {
     try {
         const pacienteActualizado = await srvUpdatePaciente(+idPaciente, req.body);
         if (!pacienteActualizado) {
-            return res.status(404).json({ message: `No se encontró el paciente con ID ${idPaciente}` });
+             res.status(404).json({ message: `No se encontró el paciente con ID ${idPaciente}` });
         }
         res.status(200).json(pacienteActualizado);
     } catch (error: any) {
@@ -81,7 +81,7 @@ export const deletePaciente = async (req: Request, res: Response) => {
     try {
         const resultado = await srvDeletePaciente(+idPaciente);
         if (!resultado) {
-            return res.status(404).json({ message: `No se encontró el paciente con ID ${idPaciente}` });
+             res.status(404).json({ message: `No se encontró el paciente con ID ${idPaciente}` });
         }
         res.status(200).json({ message: `Paciente con ID ${idPaciente} eliminado correctamente.` });
     } catch (error: any) {

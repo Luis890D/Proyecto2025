@@ -10,7 +10,7 @@ export const getReporteCitas = async (req: Request, res: Response) => {
     const { fechaInicio, fechaFin } = req.query;
 
     if (!fechaInicio || !fechaFin) {
-        return res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
+         res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
     }
 
     try {
@@ -27,7 +27,7 @@ export const getReporteProfesionales = async (req: Request, res: Response) => {
     const { fechaInicio, fechaFin } = req.query;
 
     if (!fechaInicio || !fechaFin) {
-        return res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
+         res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
     }
 
     try {
@@ -44,7 +44,7 @@ export const getReportePacientes = async (req: Request, res: Response) => {
     const { fechaInicio, fechaFin } = req.query;
 
     if (!fechaInicio || !fechaFin) {
-        return res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
+         res.status(400).json({ message: 'Se deben proporcionar las fechas de inicio y fin.' });
     }
 
     try {

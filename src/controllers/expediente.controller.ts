@@ -12,7 +12,7 @@ export const getExpedienteByCita = async (req: Request, res: Response) => {
     try {
         const expediente = await srvGetExpedienteByCita(+idCita);
         if (!expediente) {
-            return res.status(404).json({ message: `No se encontró el expediente para la cita con ID ${idCita}` });
+         res.status(404).json({ message: `No se encontró el expediente para la cita con ID ${idCita}` });
         }
         res.status(200).json(expediente);
     } catch (error: any) {
@@ -29,7 +29,7 @@ export const createExpediente = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error('Error al crear el expediente:', error.message);
         if (error.message === 'Cita no encontrada') {
-            return res.status(400).json({ message: error.message });
+             res.status(400).json({ message: error.message });
         }
         res.status(500).json({ message: 'Error interno del servidor al crear el expediente.' });
     }
@@ -41,7 +41,7 @@ export const updateExpediente = async (req: Request, res: Response) => {
     try {
         const expedienteActualizado = await srvUpdateExpediente(+idExpediente, req.body);
         if (!expedienteActualizado) {
-            return res.status(404).json({ message: `No se encontró el expediente con ID ${idExpediente}` });
+             res.status(404).json({ message: `No se encontró el expediente con ID ${idExpediente}` });
         }
         res.status(200).json(expedienteActualizado);
     } catch (error: any) {

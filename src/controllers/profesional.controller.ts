@@ -24,7 +24,7 @@ export const getProfesional = async (req: Request, res: Response) => {
     try {
         const profesional = await srvGetProfesionalByID(+idProfesional);
         if (!profesional) {
-            return res.status(404).json({ message: `No se encontró el profesional con ID ${idProfesional}` });
+             res.status(404).json({ message: `No se encontró el profesional con ID ${idProfesional}` });
         }
         res.status(200).json(profesional);
     } catch (error: any) {
@@ -50,7 +50,7 @@ export const updateProfesional = async (req: Request, res: Response) => {
     try {
         const profesionalActualizado = await srvUpdateProfesional(+idProfesional, req.body);
         if (!profesionalActualizado) {
-            return res.status(404).json({ message: `No se encontró el profesional con ID ${idProfesional}` });
+             res.status(404).json({ message: `No se encontró el profesional con ID ${idProfesional}` });
         }
         res.status(200).json(profesionalActualizado);
     } catch (error: any) {
@@ -65,7 +65,7 @@ export const deleteProfesional = async (req: Request, res: Response) => {
     try {
         const resultado = await srvDeleteProfesional(+idProfesional);
         if (!resultado) {
-            return res.status(404).json({ message: `No se encontró el profesional con ID ${idProfesional}` });
+             res.status(404).json({ message: `No se encontró el profesional con ID ${idProfesional}` });
         }
         res.status(200).json({ message: `Profesional con ID ${idProfesional} eliminado correctamente.` });
     } catch (error: any) {
