@@ -33,18 +33,18 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Usar las rutas
-app.use('/api', agendaRoutes);
-app.use('/api', asistenteRoutes);
-app.use('/api', expedienteRoutes);
-app.use('/api', informesRoutes);
-app.use('/api', usuarioRoutes);
-app.use('/api', disponibilidadRoutes);
-app.use('/api', diaNoLaborableRoutes);
-app.use('/api', pacienteRoutes);
-app.use('/api', authRoutes);
-app.use('/api', citaRoutes);
-app.use('/api', historialCitaRoutes);
-app.use('/api', profesionalesRoutes);
+app.use('/api/agenda', agendaRoutes);
+app.use('/api/asistencia', asistenteRoutes);
+app.use('/api/expediente', expedienteRoutes);
+app.use('/api/informe', informesRoutes);
+app.use('/api/usuario', usuarioRoutes);
+app.use('/api/disponibilidad', disponibilidadRoutes);
+app.use('/api/diaNoLaborable', diaNoLaborableRoutes);
+app.use('/api/paciente', pacienteRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/cita', citaRoutes);
+app.use('/api/historial', historialCitaRoutes);
+app.use('/api/profecion', profesionalesRoutes);
 
 app.listen(PORT, () => {
     console.log('Hola desde el servidor Express, Actualizado');
