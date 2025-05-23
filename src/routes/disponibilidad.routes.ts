@@ -4,16 +4,15 @@ import {
     getDisponibilidad,
     createDisponibilidad,
     updateDisponibilidad,
-    deleteDisponibilidad
-} from '../controllers/disponibilidad.controller';
+    deleteDisponibilidad,
+} from '../controllers/disponibilidad.controller'; // Adjust the path as needed
 
 const router = Router();
 
-// Rutas de Disponibilidad
-router.get('/disponibilidades/:idProfesional', getDisponibilidades);
-router.get('/disponibilidades/:idDisponibilidad', getDisponibilidad);
-router.post('/disponibilidades', createDisponibilidad);
-router.put('/disponibilidades/:idDisponibilidad', updateDisponibilidad);
-router.delete('/disponibilidades/:idDisponibilidad', deleteDisponibilidad);
+router.get('/profesional/:idProfesional', getDisponibilidades);
+router.get('/:idDisponibilidad', getDisponibilidad);
+router.post('/', createDisponibilidad);
+router.put('/:idDisponibilidad', updateDisponibilidad);
+router.delete('/:idDisponibilidad', deleteDisponibilidad);
 
 export default router;

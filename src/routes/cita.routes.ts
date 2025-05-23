@@ -7,19 +7,19 @@ import {
     createCita,
     updateCita,
     updateEstadoCita,
-    deleteCita
-} from '../controllers/cita.controller';
+    deleteCita,
+} from '../controllers/cita.controller'; // Adjust the path as needed
 
 const router = Router();
 
-// Rutas de Cita
-router.get('/citas', getCitas);
-router.get('/citas/:idCita', getCita);
-router.get('/citas/paciente/:idPaciente', getCitasByPaciente);
-router.get('/citas/profesional/:idProfesional', getCitasByProfesional);
-router.post('/citas', createCita);
-router.put('/citas/:idCita', updateCita);
-router.put('/citas/estado/:idCita', updateEstadoCita);
-router.delete('/citas/:idCita', deleteCita);
+// GET all citas
+router.get('/', getCitas);
+router.get('/:idCita', getCita);
+router.get('/paciente/:idPaciente', getCitasByPaciente);
+router.get('/profesional/:idProfesional', getCitasByProfesional);
+router.post('/', createCita);
+router.put('/:idCita', updateCita);
+router.patch('/estado/:idCita', updateEstadoCita); // Using PATCH for partial update (status only)
+router.delete('/:idCita', deleteCita);
 
 export default router;

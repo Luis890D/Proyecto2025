@@ -6,8 +6,10 @@ import {
 
 const router = Router();
 
-// Rutas de Historial Cita
-router.get('/historial-cita/:idCita', getHistorialByCita);
-router.post('/historial-cita', createRegistroHistorial);
+// Obtener historial de una cita específica
+router.get('/cita/:idCita', getHistorialByCita);
+
+// Crear nuevo registro en el historial
+router.post('/', createRegistroHistorial);
 
 export default router;

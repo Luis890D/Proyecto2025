@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import {
-    loginController,
-    changePasswordController
-} from '../controllers/auth.controller';
+import { loginController, changePasswordController } from '../controllers/auth.controller'; // Adjust the path as needed
+
 const router = Router();
-// Rutas de Auth
-router.post('/auth/login', loginController);
-router.post('/auth/change-password', changePasswordController);
+
+// User login
+router.post('/login', loginController);
+
+// Change user password
+router.post('/change-password', changePasswordController);
+
 export default router;

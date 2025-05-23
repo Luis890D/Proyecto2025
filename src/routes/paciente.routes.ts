@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
     getPacientes,
     getPaciente,
@@ -6,16 +6,16 @@ import {
     createPaciente,
     updatePaciente,
     deletePaciente
-} from '../controllers/paciente.controller';
+} from "../controllers/paciente.controller";
 
 const router = Router();
 
-// Rutas de Paciente
-router.get('/pacientes', getPacientes);
-router.get('/pacientes/:idPaciente', getPaciente);
-router.get('/pacientes/dpi/:dpi', getPacienteByDPI);
-router.post('/pacientes', createPaciente);
-router.put('/pacientes/:idPaciente', updatePaciente);
-router.delete('/pacientes/:idPaciente', deletePaciente);
+// Rutas para pacientes
+router.get('/', getPacientes);
+router.get('/:idPaciente', getPaciente);
+router.get('/dpi/:dpi', getPacienteByDPI);
+router.post('/', createPaciente);
+router.put('/:idPaciente', updatePaciente);
+router.delete('/:idPaciente', deletePaciente);
 
 export default router;
