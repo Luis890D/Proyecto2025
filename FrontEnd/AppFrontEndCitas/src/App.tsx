@@ -2,11 +2,25 @@ import React, { useState } from 'react';
 import RegistroUsuario from './RegistroUsuario';
 import EliminarUsuario from './EliminarUsuario';
 
-function App() {
+interface AppProps {
+  onVolver: () => void;
+}
+
+function App({ onVolver }: AppProps) {
   const [view, setView] = useState<'home' | 'agendar' | 'modificar' | 'eliminar'>('home');
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
+      {/* Botón de regreso al menú principal */}
+      <div className="self-start mb-4">
+        <button
+          onClick={onVolver}
+          className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800"
+        >
+          ← Regresar
+        </button>
+      </div>
+
       {view === 'home' && (
         <div className="bg-white p-8 rounded-xl shadow-lg text-center space-y-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Bienvenido</h1>
