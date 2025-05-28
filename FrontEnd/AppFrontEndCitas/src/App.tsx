@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import RegistroUsuario from './RegistroUsuario'; // Este será el componente actual de registro
+import RegistroUsuario from './RegistroUsuario';
+import EliminarUsuario from './EliminarUsuario';
 
 function App() {
   const [view, setView] = useState<'home' | 'agendar' | 'modificar' | 'eliminar'>('home');
@@ -30,37 +31,19 @@ function App() {
         </div>
       )}
 
-      {view === 'agendar' && (
-        <RegistroUsuario onVolver={() => setView('home')} />
-      )}
-
+      {view === 'agendar' && <RegistroUsuario onVolver={() => setView('home')} />}
       {view === 'modificar' && (
-        <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-          <p className="text-lg font-semibold text-gray-700">
-            Aquí irá la vista para modificar citas (pendiente)
-          </p>
+        <div className="text-center space-y-4">
+          <p className="text-lg">Aquí irá la vista para modificar citas (pendiente)</p>
           <button
             onClick={() => setView('home')}
-            className="mt-6 px-6 py-3 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-300"
+            className="mt-4 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
           >
-            Regresar al Menú
+            Regresar al menú
           </button>
         </div>
       )}
-
-      {view === 'eliminar' && (
-        <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-          <p className="text-lg font-semibold text-gray-700">
-            Aquí irá la vista para eliminar citas (pendiente)
-          </p>
-          <button
-            onClick={() => setView('home')}
-            className="mt-6 px-6 py-3 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-all duration-300"
-          >
-            Regresar al Menú
-          </button>
-        </div>
-      )}
+      {view === 'eliminar' && <EliminarUsuario onRegresar={() => setView('home')} />}
     </div>
   );
 }
