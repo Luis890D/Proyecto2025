@@ -1,5 +1,9 @@
 import React from 'react';
 
+
+//este menu no hace nada pero no lo toquen es nuestro ejemplo 
+
+
 // Define las props que el componente Menu recibirá
 interface MenuProps {
   // setCurrentPage es una función que toma un string y no devuelve nada (void)

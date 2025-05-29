@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import RegistroUsuario from './RegistroUsuario';
 import EliminarUsuario from './EliminarUsuario';
+import ModificarUsuario from './ModificarUsuario';
 
 interface AppProps {
   onVolver: () => void;
@@ -46,17 +47,7 @@ function App({ onVolver }: AppProps) {
       )}
 
       {view === 'agendar' && <RegistroUsuario onVolver={() => setView('home')} />}
-      {view === 'modificar' && (
-        <div className="text-center space-y-4">
-          <p className="text-lg">Aquí irá la vista para modificar citas (pendiente)</p>
-          <button
-            onClick={() => setView('home')}
-            className="mt-4 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-          >
-            Regresar al menú
-          </button>
-        </div>
-      )}
+      {view === 'modificar' && <ModificarUsuario onVolver={() => setView('home')} />}
       {view === 'eliminar' && <EliminarUsuario onRegresar={() => setView('home')} />}
     </div>
   );
