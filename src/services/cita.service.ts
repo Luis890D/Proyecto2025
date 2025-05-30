@@ -1,67 +1,76 @@
 import { AppDataSource } from "../config/db";
-import { Cita } from "../entities/cita";
+import { Cita } from "../entities/Cita";
+import { Cliente } from "../entities/Cliente";
+import { Profesional } from "../entities/Profesional";
+import { Asistente } from "../entities/Asistentes";
 
+// Crear el repositorio
 const citaRepository = AppDataSource.getRepository(Cita);
 
+// Obtener todas las citas
 export const srvGetCitas = async () => {
-    return await citaRepository.find({
-        relations: ['paciente', 'profesional', 'asistente'],
-        order: { fecha: 'DESC', hora: 'DESC' }
-    });
-}
+  const citas = await citaRepository.find({
+    relations: ["cliente", "profesional", "asistente"],
+    order: { fecha_inicio: "DESC" }
+  });
+  return citas;
+};
 
-export const srvGetCitaByID = async (idCita: number) => {
-    return await citaRepository.findOne({
-        where: { idCita },
-        relations: ['paciente', 'profesional', 'asistente']
-    });
-}
+// Crear una nueva cita
+export const srvCreateCita = async (
+  cliente: Cliente,
+  profesional: Profesional,
+  asistente: Asistente,
+  fecha_inicio: Date,
+  fecha_finalizacion: Date,
+  descripcion: string,
+  observaciones: string
+) => {
+  const nuevaCita = new Cita();
+  nuevaCita.cliente = cliente;
+  nuevaCita.profesional = profesional;
+  nuevaCita.asistente = asistente;
+  nuevaCita.fecha_inicio = fecha_inicio;
+  nuevaCita.fecha_finalizacion = fecha_finalizacion;
+  nuevaCita.descripcion = descripcion;
+  nuevaCita.observaciones = observaciones;
 
-export const srvGetCitasByPaciente = async (idPaciente: number) => {
-    return await citaRepository.find({
-        where: { idPaciente },
-        relations: ['profesional'],
-        order: { fecha: 'DESC', hora: 'DESC' }
-    });
-}
+  return await citaRepository.save(nuevaCita);
+};
 
-export const srvGetCitasByProfesional = async (idProfesional: number) => {
-    return await citaRepository.find({
-        where: { idProfesional },
-        relations: ['paciente'],
-        order: { fecha: 'ASC', hora: 'ASC' }
-    });
-}
+// Obtener una cita por ID
+export const srvGetCitaById = async (id: number) => {
+  return await citaRepository.findOne({
+    where: { cita_id: id },
+    relations: ["cliente", "profesional", "asistente"]
+  });
+};
 
-export const srvCreateCita = async (citaData: {
-    idPaciente: number;
-    idProfesional: number;
-    idAsistente?: number;
-    fecha: Date;
-    hora: string;
-    motivoConsulta?: string;
-}) => {
-    const nuevaCita = new Cita();
-    Object.assign(nuevaCita, citaData);
-    return await citaRepository.save(nuevaCita);
-}
+// Actualizar una cita
+export const srvUpdateCita = async (
+  id: number,
+  fecha_inicio: Date,
+  fecha_finalizacion: Date,
+  descripcion: string,
+  observaciones: string,
+  cita_estado: number
+) => {
+  const cita = await citaRepository.findOneBy({ cita_id: id });
+  if (!cita) return null;
 
-export const srvUpdateCita = async (idCita: number, updateData: Partial<Cita>) => {
-    const cita = await citaRepository.findOne({ where: { idCita } });
-    if (!cita) return null;
-    Object.assign(cita, updateData);
-    return await citaRepository.save(cita);
-}
+  cita.fecha_inicio = fecha_inicio;
+  cita.fecha_finalizacion = fecha_finalizacion;
+  cita.descripcion = descripcion;
+  cita.observaciones = observaciones; 
+  if (cita_estado !== undefined) cita.cita_estado = cita_estado;
 
-export const srvUpdateEstadoCita = async (idCita: number, estado: 'programada' | 'completada' | 'cancelada' | 'reprogramada') => {
-    const cita = await citaRepository.findOne({ where: { idCita } });
-    if (!cita) return null;
-    cita.estado = estado;
-    return await citaRepository.save(cita);
-}
+  return await citaRepository.save(cita);
+};
 
-export const srvDeleteCita = async (idCita: number) => {
-    const cita = await citaRepository.findOne({ where: { idCita } });
-    if (!cita) return null;
-    return await citaRepository.remove(cita);
-}
+// Eliminar una cita
+export const srvDeleteCita = async (id: number) => {
+  const cita = await citaRepository.findOneBy({ cita_id: id });
+  if (!cita) return null;
+
+  return await citaRepository.remove(cita);
+};

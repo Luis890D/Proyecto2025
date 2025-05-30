@@ -1,19 +1,18 @@
 import { Router } from "express";
 import {
-    getProfesionales,
-    getProfesional,
-    createProfesional,
-    updateProfesional,
-    deleteProfesional
-} from "../controllers/profesional.controller";
+  getProfesionales,
+  getProfesional,
+  createProfesional,
+  updateProfesional,
+  deleteProfesional,
+} from "../controllers/Profesional.controller";
 
 const router = Router();
 
-// Rutas para profesionales
-router.get('/', getProfesionales);
-router.get('/:idProfesional', getProfesional);
-router.post('/', createProfesional);
-router.put('/:idProfesional', updateProfesional);
-router.delete('/:idProfesional', deleteProfesional);
+router.get("/", getProfesionales);
+router.get("/:id", getProfesional);
+router.post("/", createProfesional);
+router.put("/:id", updateProfesional);
+router.delete("/:id", deleteProfesional);
 
 export default router;

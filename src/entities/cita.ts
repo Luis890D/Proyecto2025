@@ -1,59 +1,37 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne, OneToMany } from "typeorm";
-import { Paciente } from "./paciente";
-import { Profesional } from "./profesional";
-import { Asistente } from "./asistente";
-import { Expediente } from "./expediente";
-import { HistorialCita } from "./historial_citas";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Cliente } from "./Cliente";
+import { Profesional } from "./Profesional";
+import { Asistente } from "./Asistentes";
 
-@Entity({ name: 'citas' })
+@Entity()
 export class Cita {
-    @PrimaryGeneratedColumn({ name: 'id_cita' })
-    idCita: number;
+  @PrimaryGeneratedColumn()
+  cita_id: number;
 
-    @Column({ name: 'id_paciente' })
-    idPaciente: number;
+  @ManyToOne(() => Cliente)
+  @JoinColumn({ name: "cliente_id" })
+  cliente: Cliente;
 
-    @ManyToOne(() => Paciente, paciente => paciente.citas)
-    @JoinColumn({ name: 'id_paciente' })
-    paciente: Paciente;
+  @ManyToOne(() => Profesional)
+  @JoinColumn({ name: "profesional_id" })
+  profesional: Profesional;
 
-    @Column({ name: 'id_profesional' })
-    idProfesional: number;
+  @ManyToOne(() => Asistente)
+  @JoinColumn({ name: "asistente_id" })
+  asistente: Asistente;
 
-    @ManyToOne(() => Profesional, profesional => profesional.citas)
-    @JoinColumn({ name: 'id_profesional' })
-    profesional: Profesional;
+  @Column({ type: "timestamp" })
+  fecha_inicio: Date;
 
-    @Column({ name: 'id_asistente', nullable: true })
-    idAsistente: number;
+  @Column({ type: "timestamp" })
+  fecha_finalizacion: Date;
 
-    @ManyToOne(() => Asistente, asistente => asistente.citas)
-    @JoinColumn({ name: 'id_asistente' })
-    asistente: Asistente;
+  @Column({ nullable: true })
+  descripcion: string;
 
-    @Column({ name: 'fecha', type: 'date', nullable: false })
-    fecha: Date;
+  @Column({ nullable: true })
+  observaciones: string;
 
-    @Column({ name: 'hora', type: 'time', nullable: false })
-    hora: string;
-
-    @Column({ 
-        name: 'estado', 
-        length: 20, 
-        default: 'programada',
-        enum: ['programada', 'completada', 'cancelada', 'reprogramada']
-    })
-    estado: 'programada' | 'completada' | 'cancelada' | 'reprogramada';
-
-    @Column({ name: 'motivo_consulta', type: 'text', nullable: true })
-    motivoConsulta: string;
-
-    @Column({ name: 'fecha_registro', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    fechaRegistro: Date;
-
-    @OneToOne(() => Expediente, expediente => expediente.cita)
-    expediente: Expediente;
-
-    @OneToMany(() => HistorialCita, historial => historial.cita)
-    historiales: HistorialCita[];
+  @Column({ default: 1 })
+  cita_estado: number;
 }

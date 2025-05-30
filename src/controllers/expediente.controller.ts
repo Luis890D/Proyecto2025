@@ -1,63 +1,81 @@
 import { Request, Response } from "express";
 import {
-    srvGetExpedienteByCita,
-    srvCreateExpediente,
-    srvUpdateExpediente,
-    srvGetHistorialMedico,
-} from "../services/expediente.service"; // Asegúrate de que la ruta al servicio sea correcta
+  srvCreateExpediente,
+  srvDeleteExpediente,
+  srvGetExpedienteById,
+  srvGetExpedientes,
+  srvUpdateExpediente,
+} from "../services/Expediente.service";
+import { Cliente } from "../entities/Cliente";
 
-// OBTENER EL EXPEDIENTE DE UNA CITA
-export const getExpedienteByCita = async (req: Request, res: Response) => {
-    const { idCita } = req.params;
-    try {
-        const expediente = await srvGetExpedienteByCita(+idCita);
-        if (!expediente) {
-         res.status(404).json({ message: `No se encontró el expediente para la cita con ID ${idCita}` });
-        }
-        res.status(200).json(expediente);
-    } catch (error: any) {
-        console.error('Error al obtener el expediente por cita:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor al obtener el expediente.' });
-    }
+export const getExpedientes = async (req: Request, res: Response) => {
+  try {
+    const expedientes = await srvGetExpedientes();
+     res.status(200).json(expedientes);
+  } catch (error) {
+     res.status(500).json({ message: "Error al obtener expedientes" });
+  }
 };
 
-// CREAR UN NUEVO EXPEDIENTE
+export const getExpediente = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const expediente = await srvGetExpedienteById(parseInt(id));
+    if (!expediente) {
+       res.status(404).json({ message: "Expediente no encontrado" });
+    }
+     res.status(200).json(expediente);
+  } catch (error) {
+     res.status(500).json({ message: "Error al obtener expediente" });
+  }
+};
+
 export const createExpediente = async (req: Request, res: Response) => {
-    try {
-        const nuevoExpediente = await srvCreateExpediente(req.body);
-        res.status(201).json(nuevoExpediente);
-    } catch (error: any) {
-        console.error('Error al crear el expediente:', error.message);
-        if (error.message === 'Cita no encontrada') {
-             res.status(400).json({ message: error.message });
-        }
-        res.status(500).json({ message: 'Error interno del servidor al crear el expediente.' });
-    }
+  const { cliente, sintomas_diagnostico, recomendaciones, medicamentos, examenes } = req.body;
+  try {
+    const newExpediente = await srvCreateExpediente(
+      cliente as Cliente,
+      sintomas_diagnostico,
+      recomendaciones,
+      medicamentos,
+      examenes
+    );
+     res.status(201).json(newExpediente);
+  } catch (error) {
+     res.status(500).json({ message: "Error al crear expediente" });
+  }
 };
 
-// ACTUALIZAR UN EXPEDIENTE
 export const updateExpediente = async (req: Request, res: Response) => {
-    const { idExpediente } = req.params;
-    try {
-        const expedienteActualizado = await srvUpdateExpediente(+idExpediente, req.body);
-        if (!expedienteActualizado) {
-             res.status(404).json({ message: `No se encontró el expediente con ID ${idExpediente}` });
-        }
-        res.status(200).json(expedienteActualizado);
-    } catch (error: any) {
-        console.error('Error al actualizar el expediente:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor al actualizar el expediente.' });
+  const { id } = req.params;
+  const { sintomas_diagnostico, recomendaciones, medicamentos, examenes, expediente_estado } = req.body;
+  try {
+    const updatedExpediente = await srvUpdateExpediente(
+      parseInt(id),
+      sintomas_diagnostico,
+      recomendaciones,
+      medicamentos,
+      examenes,
+      expediente_estado
+    );
+    if (!updatedExpediente) {
+       res.status(404).json({ message: "Expediente no encontrado" });
     }
+     res.status(200).json(updatedExpediente);
+  } catch (error) {
+     res.status(500).json({ message: "Error al actualizar expediente" });
+  }
 };
 
-// OBTENER EL HISTORIAL MÉDICO DE UN PACIENTE
-export const getHistorialMedico = async (req: Request, res: Response) => {
-    const { idPaciente } = req.params;
-    try {
-        const historial = await srvGetHistorialMedico(+idPaciente);
-        res.status(200).json(historial);
-    } catch (error: any) {
-        console.error('Error al obtener el historial médico:', error.message);
-        res.status(500).json({ message: 'Error interno del servidor al obtener el historial médico.' });
+export const deleteExpediente = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const deletedExpediente = await srvDeleteExpediente(parseInt(id));
+    if (!deletedExpediente) {
+       res.status(404).json({ message: "Expediente no encontrado" });
     }
+     res.status(200).json(deletedExpediente);
+  } catch (error) {
+     res.status(500).json({ message: "Error al eliminar expediente" });
+  }
 };

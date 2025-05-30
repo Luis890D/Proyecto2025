@@ -1,15 +1,17 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
-import { Usuario } from '../entities/usuarios';
-import { Asistente } from '../entities/asistente';
-import { Profesional } from '../entities/profesional';
-import { Paciente } from '../entities/paciente';
-import { Disponibilidad } from '../entities/disponibilidad';
-import { DiaNoLaborable } from '../entities/dia_no_laborable';
-import { Cita } from '../entities/cita';
-import { Expediente } from '../entities/expediente';
-import { HistorialCita } from '../entities/historial_citas';
+import { Asistente } from '../entities/Asistentes';
+import { Cita } from '../entities/Cita';
+import { Cliente } from '../entities/Cliente';
+import { Consultorio } from '../entities/Consultorio';
+import { Especialidad } from '../entities/Especialidad';
+import { Expediente } from '../entities/Expediente';
+import { Horario } from '../entities/Horario';
+import { Profesional } from '../entities/Profesional';
+import { Role } from '../entities/Role';
+import { User } from '../entities/User';
+
 dotenv.config();
 
 export const AppDataSource = new DataSource({
@@ -21,15 +23,10 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: false,
-    entities: [Usuario,
-        Asistente,
-        Profesional,
-        Paciente,
-        Disponibilidad,
-        DiaNoLaborable,
-        Cita,
-        Expediente,
-        HistorialCita]
+    entities: [ Asistente,
+         Cita, Cliente, Consultorio, 
+         Especialidad, Expediente, Horario, 
+         Profesional, Role, User]
 });
 
 export const connectDB = async () => {

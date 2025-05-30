@@ -1,39 +1,34 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn, OneToMany } from "typeorm";
-import { Usuario } from "./usuarios";
-import { Disponibilidad } from "./disponibilidad";
-import { DiaNoLaborable } from "./dia_no_laborable";
-import { Cita } from "./cita";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm";
+import { User } from "./User";
+import { Consultorio } from "./Consultorio";
+import { Especialidad } from "./Especialidad";
 
-@Entity({ name: 'profesionales' })
+@Entity()
 export class Profesional {
-    @PrimaryGeneratedColumn({ name: 'id_profesional' })
-    idProfesional: number;
+  @PrimaryGeneratedColumn()
+  profesional_id: number;
 
-    @Column({ name: 'id_usuario', unique: true })
-    idUsuario: number;
+  @Column({ name: "DPI" }) // Added explicit column definition for DPI
+  DPI: number;
 
-    @OneToOne(() => Usuario)
-    @JoinColumn({ name: 'id_usuario' })
-    usuario: Usuario;
+  @OneToOne(() => User)
+  @JoinColumn({ name: "DPI" })
+  user: User;
 
-    @Column({ name: 'especialidad', length: 100, nullable: false })
-    especialidad: string;
+  @Column()
+  nombre_user: string;
 
-    @Column({ name: 'consultorio', length: 20, nullable: false })
-    consultorio: string;
+  @Column()
+  password: string;
 
-    @Column({ name: 'telefono', length: 20, nullable: true })
-    telefono: string;
+  @ManyToOne(() => Consultorio)
+  @JoinColumn({ name: "consultorio_id" })
+  consultorio: Consultorio;
 
-    @Column({ name: 'biografia', type: 'text', nullable: true })
-    biografia: string;
+  @ManyToOne(() => Especialidad)
+  @JoinColumn({ name: "especialidad_id" })
+  especialidad: Especialidad;
 
-    @OneToMany(() => Disponibilidad, disponibilidad => disponibilidad.profesional)
-    disponibilidades: Disponibilidad[];
-
-    @OneToMany(() => DiaNoLaborable, diaNoLaborable => diaNoLaborable.profesional)
-    diasNoLaborables: DiaNoLaborable[];
-
-    @OneToMany(() => Cita, cita => cita.profesional)
-    citas: Cita[];
+  @Column({ default: true })
+  estado_profesional: boolean;
 }

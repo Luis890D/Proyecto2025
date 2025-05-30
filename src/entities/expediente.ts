@@ -1,33 +1,27 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
-import { Cita } from "./cita";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Cliente } from "./Cliente";
 
-@Entity({ name: 'expedientes' })
+@Entity()
 export class Expediente {
-    @PrimaryGeneratedColumn({ name: 'id_expediente' })
-    idExpediente: number;
+  @PrimaryGeneratedColumn()
+  expediente_id: number;
 
-    @Column({ name: 'id_cita', unique: true })
-    idCita: number;
+  @ManyToOne(() => Cliente)
+  @JoinColumn({ name: "cliente_id" })
+  cliente: Cliente;
 
-    @OneToOne(() => Cita)
-    @JoinColumn({ name: 'id_cita' })
-    cita: Cita;
+  @Column({ nullable: true })
+  sintomas_diagnostico: string;
 
-    @Column({ name: 'sintomas_diagnostico', type: 'text', nullable: true })
-    sintomasDiagnostico: string;
+  @Column({ nullable: true })
+  recomendaciones: string;
 
-    @Column({ name: 'recomendaciones_medicamentos', type: 'text', nullable: true })
-    recomendacionesMedicamentos: string;
+  @Column({ nullable: true })
+  medicamentos: string;
 
-    @Column({ name: 'examenes_practicados', type: 'text', nullable: true })
-    examenesPracticados: string;
+  @Column({ nullable: true })
+  examenes: string;
 
-    @Column({ name: 'examenes_pendientes', type: 'text', nullable: true })
-    examenesPendientes: string;
-
-    @Column({ name: 'notas', type: 'text', nullable: true })
-    notas: string;
-
-    @Column({ name: 'fecha_creacion', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    fechaCreacion: Date;
+  @Column({ default: 1 })
+  expediente_estado: number;
 }

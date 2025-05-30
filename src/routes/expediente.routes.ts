@@ -1,23 +1,27 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
-    getExpedienteByCita,
-    createExpediente,
-    updateExpediente,
-    getHistorialMedico,
-} from '../controllers/expediente.controller'; // Adjust the path as needed
+  getExpedientes,
+  getExpediente,
+  createExpediente,
+  updateExpediente,
+  deleteExpediente,
+} from "../controllers/Expediente.controller";
 
 const router = Router();
 
-// GET an expediente by cita ID
-router.get('/cita/:idCita', getExpedienteByCita);
+// Obtener todos los expedientes
+router.get("/", getExpedientes);
 
-// CREATE a new expediente
-router.post('/', createExpediente);
+// Obtener expediente por ID
+router.get("/:id", getExpediente);
 
-// UPDATE an expediente by ID
-router.put('/:idExpediente', updateExpediente);
+// Crear nuevo expediente
+router.post("/", createExpediente);
 
-// GET a patient's medical history
-router.get('/historial/:idPaciente', getHistorialMedico);
+// Actualizar expediente existente
+router.put("/:id", updateExpediente);
+
+// Eliminar expediente por ID
+router.delete("/:id", deleteExpediente);
 
 export default router;

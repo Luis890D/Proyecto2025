@@ -1,45 +1,72 @@
 import { AppDataSource } from "../config/db";
-import { Expediente } from "../entities/expediente";
-import { Cita } from "../entities/cita";
+import { Expediente } from "../entities/Expediente";
+import { Cliente } from "../entities/Cliente";
 
+// Repositorio
 const expedienteRepository = AppDataSource.getRepository(Expediente);
-const citaRepository = AppDataSource.getRepository(Cita);
 
-export const srvGetExpedienteByCita = async (idCita: number) => {
-    return await expedienteRepository.findOne({
-        where: { idCita },
-        relations: ['cita']
-    });
-}
+// Obtener todos los expedientes
+export const srvGetExpedientes = async () => {
+  return await expedienteRepository.find({
+    relations: ["cliente"],
+    order: { expediente_id: "DESC" }
+  });
+};
 
-export const srvCreateExpediente = async (expedienteData: {
-    idCita: number;
-    sintomasDiagnostico?: string;
-    recomendacionesMedicamentos?: string;
-    examenesPracticados?: string;
-    examenesPendientes?: string;
-    notas?: string;
-}) => {
-    const cita = await citaRepository.findOne({ where: { idCita: expedienteData.idCita } });
-    if (!cita) throw new Error('Cita no encontrada');
+// Crear un nuevo expediente
+export const srvCreateExpediente = async (
+  cliente: Cliente,
+  sintomas_diagnostico: string,
+  recomendaciones: string,
+  medicamentos: string,
+  examenes: string
+) => {
+  const expediente = new Expediente();
+  expediente.cliente = cliente;
+  expediente.sintomas_diagnostico = sintomas_diagnostico;
+  expediente.recomendaciones = recomendaciones;
+  expediente.medicamentos = medicamentos;
+  expediente.examenes = examenes;
 
-    const nuevoExpediente = new Expediente();
-    Object.assign(nuevoExpediente, expedienteData);
-    return await expedienteRepository.save(nuevoExpediente);
-}
+  return await expedienteRepository.save(expediente);
+};
 
-export const srvUpdateExpediente = async (idExpediente: number, updateData: Partial<Expediente>) => {
-    const expediente = await expedienteRepository.findOne({ where: { idExpediente } });
-    if (!expediente) return null;
-    Object.assign(expediente, updateData);
-    return await expedienteRepository.save(expediente);
-}
+// Obtener un expediente por ID
+export const srvGetExpedienteById = async (id: number) => {
+  return await expedienteRepository.findOne({
+    where: { expediente_id: id },
+    relations: ["cliente"]
+  });
+};
 
-export const srvGetHistorialMedico = async (idPaciente: number) => {
-    return await expedienteRepository.createQueryBuilder('expediente')
-        .leftJoinAndSelect('expediente.cita', 'cita')
-        .where('cita.idPaciente = :idPaciente', { idPaciente })
-        .orderBy('cita.fecha', 'DESC')
-        .addOrderBy('cita.hora', 'DESC')
-        .getMany();
-}
+// Actualizar un expediente
+export const srvUpdateExpediente = async (
+  id: number,
+  sintomas_diagnostico: string,
+  recomendaciones: string,
+  medicamentos: string,
+  examenes: string,
+  expediente_estado: number
+) => {
+  const expediente = await expedienteRepository.findOneBy({ expediente_id: id });
+  if (!expediente) return null;
+
+  expediente.sintomas_diagnostico = sintomas_diagnostico;
+  expediente.recomendaciones = recomendaciones;
+  expediente.medicamentos = medicamentos;
+  expediente.examenes = examenes;
+
+  if (expediente_estado !== undefined) {
+    expediente.expediente_estado = expediente_estado;
+  }
+
+  return await expedienteRepository.save(expediente);
+};
+
+// Eliminar un expediente
+export const srvDeleteExpediente = async (id: number) => {
+  const expediente = await expedienteRepository.findOneBy({ expediente_id: id });
+  if (!expediente) return null;
+
+  return await expedienteRepository.remove(expediente);
+};

@@ -1,25 +1,27 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
-    getCitas,
-    getCita,
-    getCitasByPaciente,
-    getCitasByProfesional,
-    createCita,
-    updateCita,
-    updateEstadoCita,
-    deleteCita,
-} from '../controllers/cita.controller'; // Adjust the path as needed
+  getCitas,
+  getCita,
+  createCita,
+  updateCita,
+  deleteCita,
+} from "../controllers/Cita.controller";
 
 const router = Router();
 
-// GET all citas
-router.get('/', getCitas);
-router.get('/:idCita', getCita);
-router.get('/paciente/:idPaciente', getCitasByPaciente);
-router.get('/profesional/:idProfesional', getCitasByProfesional);
-router.post('/', createCita);
-router.put('/:idCita', updateCita);
-router.patch('/estado/:idCita', updateEstadoCita); // Using PATCH for partial update (status only)
-router.delete('/:idCita', deleteCita);
+// GET: Obtener todas las citas
+router.get("/", getCitas);
+
+// GET: Obtener una cita por ID
+router.get("/:id", getCita);
+
+// POST: Crear una nueva cita
+router.post("/", createCita);
+
+// PUT: Actualizar una cita existente
+router.put("/:id", updateCita);
+
+// DELETE: Eliminar una cita por ID
+router.delete("/:id", deleteCita);
 
 export default router;
