@@ -37,7 +37,7 @@ app.use("/api/users", userRoutes);
 
 // Servir el index.html en la raíz para la app frontend
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../FrontEnd/index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/'));
 });
 
 // Conectar a la base de datos

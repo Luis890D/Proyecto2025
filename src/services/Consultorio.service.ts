@@ -62,3 +62,12 @@ export const srvDeleteConsultorio = async (pIdConsultorio: number) => {
     consultorio.estado_consultorio = false;
     return await consultorioRepository.save(consultorio);
 }
+
+// Agregar al final del archivo Consultorio.service.ts
+
+// Obtener consultorios con vista completa
+export const srvGetVistaConsultorios = async () => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_consultorios
+  `);
+};

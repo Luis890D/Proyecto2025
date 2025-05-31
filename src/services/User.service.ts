@@ -65,3 +65,53 @@ export const srvDeleteUser = async (dpi: number) => {
 
   return await userRepository.remove(user);
 };
+
+// Add these to User.service.ts
+
+// Registrar usuario usando procedimiento PostgreSQL
+export const srvRegistrarUsuario = async (
+  dpi: number,
+  role_id: number,
+  primer_nombre: string,
+  segundo_nombre: string,
+  primer_apellido: string,
+  segundo_apellido: string,
+  email: string,
+  telefono: string,
+  celular: string
+) => {
+  await AppDataSource.query(
+    `CALL registrar_usuario($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [dpi, role_id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, email, telefono, celular]
+  );
+};
+
+// Actualizar usuario usando procedimiento PostgreSQL
+export const srvActualizarUsuario = async (
+  dpi: number,
+  role_id: number,
+  primer_nombre: string,
+  segundo_nombre: string,
+  primer_apellido: string,
+  segundo_apellido: string,
+  email: string,
+  telefono: string,
+  celular: string
+) => {
+  await AppDataSource.query(
+    `CALL actualizar_usuario($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [dpi, role_id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, email, telefono, celular]
+  );
+};
+
+// Login de usuario (profesional o asistente)
+export const srvLoginUsuario = async (
+  nombre_user: string,
+  password: string
+) => {
+  const result = await AppDataSource.query(
+    `SELECT * FROM login_usuario($1, $2)`,
+    [nombre_user, password]
+  );
+  return result[0]; // Return the first result (if any)
+};

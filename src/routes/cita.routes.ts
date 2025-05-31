@@ -5,23 +5,22 @@ import {
   createCita,
   updateCita,
   deleteCita,
+  getVistaCitas,
+  insertarCitaValidandoHorario,
+  actualizarCitaValidandoHorario
 } from "../controllers/Cita.controller";
 
 const router = Router();
 
-// GET: Obtener todas las citas
 router.get("/", getCitas);
-
-// GET: Obtener una cita por ID
 router.get("/:id", getCita);
-
-// POST: Crear una nueva cita
 router.post("/", createCita);
-
-// PUT: Actualizar una cita existente
+router.post("/validar-horario", insertarCitaValidandoHorario); // Nueva ruta
 router.put("/:id", updateCita);
-
-// DELETE: Eliminar una cita por ID
+router.put("/:id/validar-horario", actualizarCitaValidandoHorario); // Nueva ruta
 router.delete("/:id", deleteCita);
+
+// Ruta para la vista de citas
+router.get("/vista/completa", getVistaCitas);
 
 export default router;

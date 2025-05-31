@@ -5,23 +5,24 @@ import {
   createHorario,
   updateHorario,
   deleteHorario,
+  getVistaHorariosProfesionales,
+  getVistaHorariosByProfesional,
+  insertarHorario,
+  actualizarHorario
 } from "../controllers/Horario.controller";
 
 const router = Router();
 
-// Obtener todos los horarios
 router.get("/", getHorarios);
-
-// Obtener horario por ID
 router.get("/:id", getHorario);
-
-// Crear nuevo horario
 router.post("/", createHorario);
-
-// Actualizar horario existente
+router.post("/insertar", insertarHorario); // Nueva ruta con función PostgreSQL
 router.put("/:id", updateHorario);
-
-// Eliminar horario por ID
+router.put("/:id/actualizar", actualizarHorario); // Nueva ruta con función PostgreSQL
 router.delete("/:id", deleteHorario);
+
+// Rutas para las vistas de horarios
+router.get("/vista/profesionales", getVistaHorariosProfesionales);
+router.get("/vista/profesionales/:id", getVistaHorariosByProfesional);
 
 export default router;

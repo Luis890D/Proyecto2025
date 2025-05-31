@@ -4,6 +4,8 @@ import {
   srvDeleteUser,
   srvGetUserByDPI,
   srvGetUsers,
+  srvLoginUsuario,
+  srvRegistrarUsuario,
   srvUpdateUser,
 } from "../services/User.service";
 import { Role } from "../entities/Role";
@@ -82,5 +84,56 @@ export const deleteUser = async (req: Request, res: Response) => {
      res.status(200).json(deletedUser);
   } catch (error) {
      res.status(500).json({ message: "Error al eliminar usuario" });
+  }
+};
+// Añadir al final del archivo
+export const registrarUsuario = async (req: Request, res: Response) => {
+  const {
+    dpi,
+    role_id,
+    primer_nombre,
+    segundo_nombre,
+    primer_apellido,
+    segundo_apellido,
+    email,
+    telefono,
+    celular
+  } = req.body;
+
+  try {
+    await srvRegistrarUsuario(
+      dpi,
+      role_id,
+      primer_nombre,
+      segundo_nombre,
+      primer_apellido,
+      segundo_apellido,
+      email,
+      telefono,
+      celular
+    );
+    res.status(201).json({ message: "Usuario registrado exitosamente" });
+  } catch (error: any) {
+    res.status(500).json({ 
+      message: "Error al registrar usuario",
+      error: error.message 
+    });
+  }
+};
+
+export const loginUsuario = async (req: Request, res: Response) => {
+  const { nombre_user, password } = req.body;
+  
+  try {
+    const result = await srvLoginUsuario(nombre_user, password);
+    if (!result) {
+       res.status(401).json({ message: "Credenciales inválidas" });
+    }
+    res.status(200).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error en el login",
+      error: error.message
+    });
   }
 };

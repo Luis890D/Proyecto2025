@@ -5,23 +5,20 @@ import {
   createAsistente,
   updateAsistente,
   deleteAsistente,
+  getVistaAsistentes,
+  registrarAsistente
 } from "../controllers/Asistentes.controller";
- 
+
 const router = Router();
 
-// GET: Obtener todos los asistentes
 router.get("/", getAsistentes);
-
-// GET: Obtener un asistente por ID
 router.get("/:id", getAsistente);
-
-// POST: Crear un nuevo asistente
 router.post("/", createAsistente);
-
-// PUT: Actualizar un asistente por ID
+router.post("/registrar", registrarAsistente); // Nueva ruta para registro con procedimiento
 router.put("/:id", updateAsistente);
-
-// DELETE: Eliminar un asistente por ID
 router.delete("/:id", deleteAsistente);
+
+// Ruta para la vista de asistentes
+router.get("/vista/completa", getVistaAsistentes);
 
 export default router;

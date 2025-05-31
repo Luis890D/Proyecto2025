@@ -59,3 +59,27 @@ export const srvDeleteAsistente = async (id: number) => {
 
   return await asistenteRepository.remove(asistente);
 };
+
+// Agregar al final del archivo Asistentes.service.ts
+
+// Obtener asistentes con vista completa
+export const srvGetVistaAsistentes = async () => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_asistentes
+  `);
+};
+
+// Add this to Asistentes.service.ts
+
+// Registrar asistente usando procedimiento PostgreSQL
+export const srvRegistrarAsistente = async (
+  dpi: number,
+  nombre_user: string,
+  password: string,
+  estado_asistente: boolean = true
+) => {
+  await AppDataSource.query(
+    `CALL registrar_asistente($1, $2, $3, $4)`,
+    [dpi, nombre_user, password, estado_asistente]
+  );
+};

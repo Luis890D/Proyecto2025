@@ -44,3 +44,19 @@ export const srvDeleteCliente = async (id: number) => {
 
   return await clienteRepository.remove(cliente);
 };
+
+// Agregar al final del archivo Cliente.service.ts
+
+// Obtener clientes con vista completa
+export const srvGetVistaClientes = async () => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_clientes
+  `);
+};
+
+// Obtener clientes con sus expedientes
+export const srvGetVistaClientesExpedientes = async () => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_clientes_expedientes
+  `);
+};

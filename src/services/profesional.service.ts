@@ -4,6 +4,7 @@ import { Profesional } from "../entities/Profesional";
 import { User } from "../entities/User";
 import { Consultorio } from "../entities/Consultorio";
 import { Especialidad } from "../entities/Especialidad";
+import { VistaProfesional } from "../vistas";
 
 // Repositorio
 const profesionalRepository = AppDataSource.getRepository(Profesional);
@@ -97,4 +98,36 @@ export const srvDeleteProfesional = async (id: number) => {
   if (!profesional) return null;
 
   return await profesionalRepository.remove(profesional);
+};
+
+// Agregar al final del archivo Profesional.service.ts
+
+/* Obtener profesionales con vista completa
+export const srvGetVistaProfesionales = async () => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_profesionales
+  `);
+};*/
+
+export const srvGetVistaProfesionales = async (): Promise<VistaProfesional[]> => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_profesionales
+  `);
+};
+
+// Add this to Profesional.service.ts
+
+// Registrar profesional usando procedimiento PostgreSQL
+export const srvRegistrarProfesional = async (
+  dpi: number,
+  nombre_user: string,
+  password: string,
+  especialidad_id: number,
+  consultorio_id: number,
+  estado_profesional: boolean = true
+) => {
+  await AppDataSource.query(
+    `CALL registrar_profesional($1, $2, $3, $4, $5, $6)`,
+    [dpi, nombre_user, password, especialidad_id, consultorio_id, estado_profesional]
+  );
 };

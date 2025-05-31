@@ -74,3 +74,58 @@ export const srvDeleteCita = async (id: number) => {
 
   return await citaRepository.remove(cita);
 };
+
+// Agregar al final del archivo Cita.service.ts
+
+// Obtener citas con vista completa
+export const srvGetVistaCitas = async () => {
+  return await AppDataSource.query(`
+    SELECT * FROM vista_citas
+  `);
+};
+
+// insertar cita validando horario
+export const srvInsertarCitaValidandoHorario = async (
+  cliente_id: number,
+  profesional_id: number,
+  asistente_id: number,
+  fecha_inicio: Date,
+  fecha_finalizacion: Date,
+  descripcion: string,
+  observaciones: string
+) => {
+  try {
+    await AppDataSource.query(
+      `SELECT insertar_cita_validando_horario($1, $2, $3, $4, $5, $6, $7)`,
+      [cliente_id, profesional_id, asistente_id, fecha_inicio, fecha_finalizacion, descripcion, observaciones]
+    );
+    return { success: true };
+  } catch (error: unknown) { 
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: 'An unknown error occurred.' };
+  }
+};
+
+// Actualizar cita validando horario
+export const srvActualizarCitaValidandoHorario = async (
+  cita_id: number,
+  fecha_inicio: Date,
+  fecha_finalizacion: Date,
+  descripcion: string,  // Fixed typo from 'description' to 'descripcion'
+  observaciones: string
+) => {
+  try {
+    await AppDataSource.query(
+      `SELECT actualizar_cita_validando_horario($1, $2, $3, $4, $5)`,
+      [cita_id, fecha_inicio, fecha_finalizacion, descripcion, observaciones]
+    );
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: 'Unknown error occurred' };
+  }
+};

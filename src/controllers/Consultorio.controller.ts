@@ -4,6 +4,7 @@ import {
   srvDeleteConsultorio,
   srvGetConsultorioByID,
   srvGetConsultorios,
+  srvGetVistaConsultorios,
   srvUpdateConsultorio,
 } from "../services/Consultorio.service";
 
@@ -68,5 +69,15 @@ export const deleteConsultorio = async (req: Request, res: Response) => {
      res.status(200).json(deletedConsultorio);
   } catch (error) {
      res.status(500).json({ message: "Error al eliminar consultorio" });
+  }
+};
+
+// Agregar al final del archivo Consultorio.controller.ts
+export const getVistaConsultorios = async (req: Request, res: Response) => {
+  try {
+    const consultorios = await srvGetVistaConsultorios();
+    res.status(200).json(consultorios);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener vista de consultorios" });
   }
 };

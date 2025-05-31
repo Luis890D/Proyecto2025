@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import {
+  srvActualizarHorario,
   srvCreateHorario,
   srvDeleteHorario,
   srvGetHorarioById,
   srvGetHorarios,
+  srvGetVistaHorariosByProfesionalId,
+  srvGetVistaHorariosProfesionales,
+  srvInsertarHorario,
   srvUpdateHorario,
 } from "../services/Horario.service";
 import { Profesional } from "../entities/Profesional";
@@ -77,5 +81,79 @@ export const deleteHorario = async (req: Request, res: Response) => {
      res.status(200).json(deletedHorario);
   } catch (error) {
      res.status(500).json({ message: "Error al eliminar horario" });
+  }
+};
+// Agregar al final del archivo Horario.controller.ts
+export const getVistaHorariosProfesionales = async (req: Request, res: Response) => {
+  try {
+    const horarios = await srvGetVistaHorariosProfesionales();
+    res.status(200).json(horarios);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener vista de horarios profesionales" });
+  }
+};
+
+export const getVistaHorariosByProfesional = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const horarios = await srvGetVistaHorariosByProfesionalId(parseInt(id));
+    if (!horarios || horarios.length === 0) {
+      res.status(404).json({ message: "No se encontraron horarios para este profesional" });
+    }
+    res.status(200).json(horarios);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener vista de horarios del profesional" });
+  }
+};
+// Añadir al final del archivo
+export const insertarHorario = async (req: Request, res: Response) => {
+  const {
+    profesional_id,
+    fecha,
+    hora_inicio,
+    hora_finalizacion,
+    tipo
+  } = req.body;
+
+  try {
+    const result = await srvInsertarHorario(
+      profesional_id,
+      fecha,
+      new Date(hora_inicio),
+      new Date(hora_finalizacion),
+      tipo
+    );
+    res.status(201).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error al insertar horario",
+      error: error.message
+    });
+  }
+};
+
+export const actualizarHorario = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    fecha,
+    hora_inicio,
+    hora_finalizacion,
+    tipo
+  } = req.body;
+
+  try {
+    const result = await srvActualizarHorario(
+      parseInt(id),
+      fecha,
+      new Date(hora_inicio),
+      new Date(hora_finalizacion),
+      tipo
+    );
+    res.status(200).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error al actualizar horario",
+      error: error.message
+    });
   }
 };

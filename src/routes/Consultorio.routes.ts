@@ -5,23 +5,18 @@ import {
   createConsultorio,
   updateConsultorio,
   deleteConsultorio,
+  getVistaConsultorios
 } from "../controllers/Consultorio.controller";
 
 const router = Router();
 
-// Obtener todos los consultorios
 router.get("/", getConsultorios);
-
-// Obtener un consultorio por ID
 router.get("/:id", getConsultorio);
-
-// Crear un nuevo consultorio
 router.post("/", createConsultorio);
-
-// Actualizar consultorio
 router.put("/:id", updateConsultorio);
-
-// Eliminar consultorio
 router.delete("/:id", deleteConsultorio);
+
+// Nueva ruta para la vista de consultorios
+router.get("/vista/completa", getVistaConsultorios);
 
 export default router;

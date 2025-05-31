@@ -5,23 +5,22 @@ import {
   createCliente,
   updateClienteEstado,
   deleteCliente,
+  getVistaClientes,
+  getVistaClientesExpedientes,
+  getVistaClienteExpediente
 } from "../controllers/Cliente.controller";
 
 const router = Router();
 
-// Obtener todos los clientes
 router.get("/", getClientes);
-
-// Obtener un cliente por ID
 router.get("/:id", getCliente);
-
-// Crear un nuevo cliente
 router.post("/", createCliente);
-
-// Actualizar el estado de un cliente
 router.patch("/:id/estado", updateClienteEstado);
-
-// Eliminar un cliente por ID
 router.delete("/:id", deleteCliente);
+
+// Nuevas rutas para las vistas de clientes
+router.get("/vista/completa", getVistaClientes);
+router.get("/vista/expedientes", getVistaClientesExpedientes);
+router.get("/vista/expedientes/:id", getVistaClienteExpediente);
 
 export default router;

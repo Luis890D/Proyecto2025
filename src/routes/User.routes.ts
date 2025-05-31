@@ -5,14 +5,18 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  registrarUsuario,
+  loginUsuario
 } from "../controllers/User.controller";
 
 const router = Router();
 
-router.get("/", getUsers);           // Obtener todos los usuarios
-router.get("/:dpi", getUser);        // Obtener un usuario por DPI
-router.post("/", createUser);        // Crear un nuevo usuario
-router.put("/:dpi", updateUser);     // Actualizar un usuario por DPI
-router.delete("/:dpi", deleteUser);  // Eliminar un usuario por DPI
+router.get("/", getUsers);
+router.get("/:dpi", getUser);
+router.post("/", createUser);
+router.post("/registrar", registrarUsuario); // Nueva ruta con procedimiento
+router.post("/login", loginUsuario); // Nueva ruta de autenticación
+router.put("/:dpi", updateUser);
+router.delete("/:dpi", deleteUser);
 
 export default router;

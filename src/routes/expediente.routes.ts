@@ -5,23 +5,24 @@ import {
   createExpediente,
   updateExpediente,
   deleteExpediente,
+  getVistaExpedientes,
+  getVistaExpedienteByCliente,
+  crearExpediente,
+  buscarExpediente
 } from "../controllers/Expediente.controller";
 
 const router = Router();
 
-// Obtener todos los expedientes
 router.get("/", getExpedientes);
-
-// Obtener expediente por ID
+router.get("/buscar", buscarExpediente); // Nueva ruta de búsqueda
 router.get("/:id", getExpediente);
-
-// Crear nuevo expediente
 router.post("/", createExpediente);
-
-// Actualizar expediente existente
+router.post("/crear", crearExpediente); // Nueva ruta con función PostgreSQL
 router.put("/:id", updateExpediente);
-
-// Eliminar expediente por ID
 router.delete("/:id", deleteExpediente);
+
+// Rutas para las vistas de expedientes
+router.get("/vista/completa", getVistaExpedientes);
+router.get("/vista/cliente/:id", getVistaExpedienteByCliente);
 
 export default router;
