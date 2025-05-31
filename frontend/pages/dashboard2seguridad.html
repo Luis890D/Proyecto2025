@@ -95,7 +95,7 @@
 
         <!-- Navegación lateral - Dashboard -->
         <li class="nav-item active">
-          <a class="nav-link" href="historial.html" id="Enlace-reportes">
+          <a class="nav-link" href="report.html" id="Enlace-reportes">
             <i class="fas fa-fw fa-clipboard-list"></i>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -181,16 +181,148 @@
                 />
               </svg>
             </button>
-            </nav>
 
+            <!-- Fin Botón de manual de usuario-->
+            <!-- Barra superior navbar -->
 
-      <!-- aca insertar el contenido de la pagina  -->
+          </nav>
+          <!-- Fin de navegador -->
 
+          <!-- Contenido de la pagina -->
+          <div class="container-fluid">
+            <!-- Encabezado de la pagina -->
+            <div
+              class="d-sm-flex align-items-center justify-content-between mb-4"
+            >
+              <!--
+              <h1 class="h3 mb-0 text-gray-800">Control de actividades</h1>
+              
+              Creación de reportes
+              <a
+                href="#"
+                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                ><i class="fas fa-download fa-sm text-white-50"></i> Generar
+                reporte</a
+              >
+              -->
+            </div>
+            <div>
+              <div class="text-center" id="Activity-pendiente">
+                <h1 class="h4 text-gray-900 mb-4">Actividades pendientes</h1>
+              </div>
 
+              <!-- Contenido horizontal -->
+              <div class="row" id="tarjetas-ejes-actividades-pendientes">
+                <!-- Tarjeta de ejes se cargan de manera automatica-->
+              </div>
+            </div>
 
+            <div>
+              <div class="text-center" id="Activity-iniciadas">
+                <h1 class="h4 text-gray-900 mb-4">Actividades iniciadas</h1>
+              </div>
 
+              <!-- Contenido horizontal -->
+              <div class="row" id="tarjetas-ejes-actividades-iniciadas">
+                <!-- Tarjeta de ejes se cargan de manera automatica-->
+              </div>
+            </div>
 
-            
+            <div>
+              <div class="text-center" id="Activity-finalizadas">
+                <h1 class="h4 text-gray-900 mb-4">Actividades finalizadas</h1>
+              </div>
+
+              <!-- Contenido horizontal -->
+              <div class="row" id="tarjetas-ejes-actividades-finalizadas">
+                <!-- Tarjeta de ejes se cargan de manera automatica-->
+              </div>
+            </div>
+            <!-- Tarjeta Tareas Cumplidas -->
+            <div
+              class="col-xl-12 col-md-6 mb-4"
+              id="tarjeta-porcentaje-actividades"
+            >
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div
+                        class="text-xs font-weight-bold text-gray-800 text-uppercase mb-1"
+                      >
+                        Porcentaje de cumplimiento
+                      </div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="h5 mb-0 mr-3 font-weight-bold text-gray-800"
+                            id="data-value-TaskCump"
+                          >
+                            0%
+                          </div>
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div
+                              class="progress-bar bg-info"
+                              role="progressbar"
+                              style="width: 0%"
+                              aria-valuenow="0"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contenido horizontal -->
+            <!-- Graficas -->
+            <div>
+              <div class="text-center" id="Activity-totales">
+                <h1 class="h4 text-gray-900 mb-4">
+                  Cantidad de actividades registradas para el año actual
+                </h1>
+              </div>
+
+              <!-- Contenido horizontal -->
+              <div class="row" id="tarjetas-ejes-actividades-totales">
+                <!-- Tarjeta de ejes se cargan de manera automatica-->
+              </div>
+            </div>
+            <div class="text-center">
+              <h2 class="h4 text-gray-900 mb-4">Cumplimiento anual por eje</h2>
+            </div>
+            <!-- Contenido horizontal -->
+            <div class="row" id="tarjeta-cumplimiento-porcentaje-eje">
+              <!-- Encabezado de tarjeta -->
+              <div class="col-lg-12 mb-4">
+                <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      Porcentaje de actividades ingresadas al software según la
+                      planificación
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row" id="tarjeta-cumplimiento-porcentaje-eje">
+                      <!-- Las tarjetas dinámicas se generarán aquí -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Fin del contenido de la pagina -->
+
         <!-- Footer -->
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
