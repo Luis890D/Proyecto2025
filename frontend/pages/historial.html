@@ -186,6 +186,740 @@
 
       <!-- aca insertar el contenido de la pagina  -->
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Profesional - Historial de Citas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content {
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .nav-tabs {
+            margin-bottom: 0;
+        }
+        .badge-estado {
+            font-size: 0.9em;
+            padding: 5px 8px;
+        }
+        .badge-programada {
+            background-color: #6c757d;
+        }
+        .badge-confirmada {
+            background-color: #0d6efd;
+        }
+        .badge-completada {
+            background-color: #198754;
+        }
+        .badge-cancelada {
+            background-color: #dc3545;
+        }
+        .profesional-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        /* Estilos para la tabla en el PDF */
+        .pdf-export {
+            position: absolute;
+            left: -9999px;
+            width: 700px;
+            padding: 20px;
+            background-color: white;
+        }
+        .pdf-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .pdf-subtitle {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 16px;
+        }
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .pdf-table th {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .pdf-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .pdf-badge {
+            color: #fff;
+            border: none;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Panel del Profesional</h1>
+            <button class="btn btn-outline-secondary" id="btn-cerrar-sesion">Cerrar Sesión</button>
+        </div>
+        
+        <!-- Información del profesional -->
+        <div class="profesional-info" id="info-profesional">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 id="profesional-nombre"></h3>
+                    <p class="mb-1"><strong>Especialidad:</strong> <span id="profesional-especialidad"></span></p>
+                    <p class="mb-1"><strong>Consultorio:</strong> <span id="profesional-consultorio"></span></p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1"><strong>Correo:</strong> <span id="profesional-email"></span></p>
+                    <p class="mb-1"><strong>Teléfono:</strong> <span id="profesional-telefono"></span></p>
+                </div>
+            </div>
+        </div>
+        
+        <ul class="nav nav-tabs" id="profesionalTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="citas-programadas-tab" data-bs-toggle="tab" data-bs-target="#citas-programadas" type="button" role="tab">Citas Programadas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="historial-citas-tab" data-bs-toggle="tab" data-bs-target="#historial-citas" type="button" role="tab">Historial de Citas</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="profesionalTabsContent">
+            <!-- Pestaña Citas Programadas -->
+            <div class="tab-pane fade show active" id="citas-programadas" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Citas Programadas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Descripción</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-citas-programadas">
+                                    <!-- Las citas programadas se cargarán aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pestaña Historial de Citas -->
+            <div class="tab-pane fade" id="historial-citas" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Historial de Citas</h5>
+                            <button class="btn btn-sm btn-primary" id="btn-exportar-historial">Exportar a PDF</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="fecha-inicio-historial" class="form-label">Fecha Inicio</label>
+                                <input type="date" class="form-control" id="fecha-inicio-historial">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="fecha-fin-historial" class="form-label">Fecha Fin</label>
+                                <input type="date" class="form-control" id="fecha-fin-historial">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="estado-historial" class="form-label">Estado</label>
+                                <select class="form-select" id="estado-historial">
+                                    <option value="">Todos</option>
+                                    <option value="1">Programada</option>
+                                    <option value="2">Confirmada</option>
+                                    <option value="3">Completada</option>
+                                    <option value="4">Cancelada</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-primary" id="btn-filtrar-historial">Filtrar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Descripción</th>
+                                        <th>Estado</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-historial-citas">
+                                    <!-- El historial de citas se cargará aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Cita -->
+    <div class="modal fade" id="detalleCitaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Cita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="detalle-cita-body">
+                    <!-- Contenido dinámico -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-success" id="btn-confirmar-cita">Confirmar Cita</button>
+                    <button type="button" class="btn btn-danger" id="btn-cancelar-cita">Cancelar Cita</button>
+                    <button type="button" class="btn btn-primary" id="btn-completar-cita">Marcar como Completada</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <!-- Librerías para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Inicializar jsPDF
+        const { jsPDF } = window.jspdf;
+        
+        // Variables globales
+        let profesionalActual = null;
+        let citaSeleccionada = null;
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener el ID del profesional de la sesión (simulado)
+            const profesionalId = obtenerIdProfesionalDeSesion();
+            
+            // Cargar información del profesional
+            cargarInformacionProfesional(profesionalId);
+            
+            // Cargar citas programadas
+            cargarCitasProgramadas(profesionalId);
+            
+            // Configurar fechas por defecto para el historial (últimos 30 días)
+            const fechaFin = new Date();
+            const fechaInicio = new Date();
+            fechaInicio.setDate(fechaFin.getDate() - 30);
+            
+            document.getElementById('fecha-inicio-historial').valueAsDate = fechaInicio;
+            document.getElementById('fecha-fin-historial').valueAsDate = fechaFin;
+            
+            // Cargar historial inicial
+            cargarHistorialCitas(profesionalId, fechaInicio, fechaFin);
+            
+            // Asignar eventos
+            document.getElementById('btn-filtrar-historial').addEventListener('click', function() {
+                const fechaInicio = new Date(document.getElementById('fecha-inicio-historial').value);
+                const fechaFin = new Date(document.getElementById('fecha-fin-historial').value);
+                const estado = document.getElementById('estado-historial').value;
+                
+                cargarHistorialCitas(profesionalId, fechaInicio, fechaFin, estado);
+            });
+            
+            document.getElementById('btn-exportar-historial').addEventListener('click', exportarHistorialPDF);
+            document.getElementById('btn-confirmar-cita').addEventListener('click', confirmarCita);
+            document.getElementById('btn-cancelar-cita').addEventListener('click', cancelarCita);
+            document.getElementById('btn-completar-cita').addEventListener('click', completarCita);
+            document.getElementById('btn-cerrar-sesion').addEventListener('click', cerrarSesion);
+        });
+        
+        // Función simulada para obtener el ID del profesional de la sesión
+        function obtenerIdProfesionalDeSesion() {
+            // En una aplicación real, esto vendría de la sesión/cookie/token
+            return 1; // Simulamos que el profesional con ID 1 está logueado
+        }
+        
+        // Función para cargar información del profesional
+        async function cargarInformacionProfesional(profesionalId) {
+            try {
+                const response = await fetch(`/api/profesionales/${profesionalId}`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar información del profesional');
+                }
+                
+                profesionalActual = await response.json();
+                
+                // Mostrar información en el panel
+                document.getElementById('profesional-nombre').textContent = 
+                    `${profesionalActual.user.primer_nombre} ${profesionalActual.user.primer_apellido}`;
+                document.getElementById('profesional-especialidad').textContent = 
+                    profesionalActual.especialidad?.nombre || 'No especificada';
+                document.getElementById('profesional-consultorio').textContent = 
+                    profesionalActual.consultorio?.nombre || 'No asignado';
+                document.getElementById('profesional-email').textContent = 
+                    profesionalActual.user.email || 'No disponible';
+                document.getElementById('profesional-telefono').textContent = 
+                    profesionalActual.user.telefono || 'No disponible';
+            } catch (error) {
+                console.error('Error al cargar información del profesional:', error);
+                mostrarAlerta('Error al cargar información del profesional', 'danger');
+            }
+        }
+        
+        // Función para cargar citas programadas
+        async function cargarCitasProgramadas(profesionalId) {
+            try {
+                // Obtener citas programadas (estado 1: programada, 2: confirmada)
+                const response = await fetch(`/api/citas?profesional_id=${profesionalId}&estado=1,2`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar citas programadas');
+                }
+                
+                const citas = await response.json();
+                const tabla = document.getElementById('tabla-citas-programadas');
+                tabla.innerHTML = '';
+                
+                if (citas.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="6" class="text-center">No hay citas programadas</td></tr>';
+                    return;
+                }
+                
+                citas.forEach(cita => {
+                    const fecha = new Date(cita.fecha_inicio);
+                    const horaInicio = new Date(cita.fecha_inicio);
+                    const horaFin = new Date(cita.fecha_finalizacion);
+                    
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${fecha.toLocaleDateString('es-ES')}</td>
+                        <td>${horaInicio.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})} - ${horaFin.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</td>
+                        <td>${cita.cliente.primer_nombre} ${cita.cliente.primer_apellido}</td>
+                        <td>${cita.descripcion}</td>
+                        <td><span class="badge rounded-pill ${obtenerClaseEstadoCita(cita.cita_estado)}">${obtenerTextoEstadoCita(cita.cita_estado)}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info ver-detalle" data-id="${cita.cita_id}">Detalle</button>
+                        </td>
+                    `;
+                    tabla.appendChild(fila);
+                    
+                    // Asignar evento para ver detalle
+                    fila.querySelector('.ver-detalle').addEventListener('click', function() {
+                        verDetalleCita(cita);
+                    });
+                });
+            } catch (error) {
+                console.error('Error al cargar citas programadas:', error);
+                mostrarAlerta('Error al cargar citas programadas', 'danger');
+            }
+        }
+        
+        // Función para cargar historial de citas
+        async function cargarHistorialCitas(profesionalId, fechaInicio, fechaFin, estado = '') {
+            try {
+                // Construir parámetros de búsqueda
+                const params = new URLSearchParams();
+                params.append('profesional_id', profesionalId);
+                params.append('fecha_inicio', fechaInicio.toISOString().split('T')[0]);
+                params.append('fecha_fin', fechaFin.toISOString().split('T')[0]);
+                if (estado) params.append('estado', estado);
+                
+                const response = await fetch(`/api/citas?${params.toString()}`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar historial de citas');
+                }
+                
+                const citas = await response.json();
+                const tabla = document.getElementById('tabla-historial-citas');
+                tabla.innerHTML = '';
+                
+                if (citas.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="6" class="text-center">No se encontraron citas en el rango seleccionado</td></tr>';
+                    return;
+                }
+                
+                citas.forEach(cita => {
+                    const fecha = new Date(cita.fecha_inicio);
+                    const horaInicio = new Date(cita.fecha_inicio);
+                    const horaFin = new Date(cita.fecha_finalizacion);
+                    
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${fecha.toLocaleDateString('es-ES')}</td>
+                        <td>${horaInicio.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})} - ${horaFin.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</td>
+                        <td>${cita.cliente.primer_nombre} ${cita.cliente.primer_apellido}</td>
+                        <td>${cita.descripcion}</td>
+                        <td><span class="badge rounded-pill ${obtenerClaseEstadoCita(cita.cita_estado)}">${obtenerTextoEstadoCita(cita.cita_estado)}</span></td>
+                        <td>${cita.observaciones || 'Ninguna'}</td>
+                    `;
+                    tabla.appendChild(fila);
+                });
+            } catch (error) {
+                console.error('Error al cargar historial de citas:', error);
+                mostrarAlerta('Error al cargar historial de citas', 'danger');
+            }
+        }
+        
+        // Función para ver detalle de cita
+        function verDetalleCita(cita) {
+            citaSeleccionada = cita;
+            const modal = new bootstrap.Modal(document.getElementById('detalleCitaModal'));
+            
+            const fecha = new Date(cita.fecha_inicio);
+            const horaInicio = new Date(cita.fecha_inicio);
+            const horaFin = new Date(cita.fecha_finalizacion);
+            
+            document.getElementById('detalle-cita-body').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Fecha:</strong> ${fecha.toLocaleDateString('es-ES')}</p>
+                        <p><strong>Hora:</strong> ${horaInicio.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})} - ${horaFin.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</p>
+                        <p><strong>Estado:</strong> <span class="badge ${obtenerClaseEstadoCita(cita.cita_estado)}">${obtenerTextoEstadoCita(cita.cita_estado)}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Paciente:</strong> ${cita.cliente.primer_nombre} ${cita.cliente.primer_apellido}</p>
+                        <p><strong>Teléfono:</strong> ${cita.cliente.telefono || 'No disponible'}</p>
+                        <p><strong>Email:</strong> ${cita.cliente.email || 'No disponible'}</p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <p><strong>Descripción:</strong></p>
+                        <p>${cita.descripcion}</p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <p><strong>Observaciones:</strong></p>
+                        <p>${cita.observaciones || 'Ninguna'}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar/ocultar botones según estado
+            document.getElementById('btn-confirmar-cita').style.display = 
+                (cita.cita_estado === 1) ? 'block' : 'none'; // Solo para programadas
+            document.getElementById('btn-cancelar-cita').style.display = 
+                (cita.cita_estado === 1 || cita.cita_estado === 2) ? 'block' : 'none'; // Para programadas y confirmadas
+            document.getElementById('btn-completar-cita').style.display = 
+                (cita.cita_estado === 2) ? 'block' : 'none'; // Solo para confirmadas
+            
+            modal.show();
+        }
+        
+        // Función para confirmar cita
+        async function confirmarCita() {
+            if (!citaSeleccionada) return;
+            
+            try {
+                const response = await fetch(`/api/citas/${citaSeleccionada.cita_id}/estado`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cita_estado: 2 // Confirmada
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al confirmar cita');
+                }
+                
+                mostrarAlerta('Cita confirmada exitosamente', 'success');
+                
+                // Recargar citas programadas
+                cargarCitasProgramadas(profesionalActual.profesional_id);
+                
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('detalleCitaModal')).hide();
+            } catch (error) {
+                console.error('Error al confirmar cita:', error);
+                mostrarAlerta('Error al confirmar cita: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para cancelar cita
+        async function cancelarCita() {
+            if (!citaSeleccionada) return;
+            
+            if (!confirm('¿Está seguro de cancelar esta cita?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/citas/${citaSeleccionada.cita_id}/estado`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cita_estado: 4 // Cancelada
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al cancelar cita');
+                }
+                
+                mostrarAlerta('Cita cancelada exitosamente', 'success');
+                
+                // Recargar citas programadas
+                cargarCitasProgramadas(profesionalActual.profesional_id);
+                
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('detalleCitaModal')).hide();
+            } catch (error) {
+                console.error('Error al cancelar cita:', error);
+                mostrarAlerta('Error al cancelar cita: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para completar cita
+        async function completarCita() {
+            if (!citaSeleccionada) return;
+            
+            const observaciones = prompt('Ingrese observaciones de la consulta:');
+            if (observaciones === null) return;
+            
+            try {
+                const response = await fetch(`/api/citas/${citaSeleccionada.cita_id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cita_estado: 3, // Completada
+                        observaciones: observaciones
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al completar cita');
+                }
+                
+                mostrarAlerta('Cita marcada como completada', 'success');
+                
+                // Recargar citas programadas
+                cargarCitasProgramadas(profesionalActual.profesional_id);
+                
+                // Cerrar modal
+                bootstrap.Modal.getInstance(document.getElementById('detalleCitaModal')).hide();
+            } catch (error) {
+                console.error('Error al completar cita:', error);
+                mostrarAlerta('Error al completar cita: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para exportar historial a PDF
+        function exportarHistorialPDF() {
+            const tabla = document.getElementById('tabla-historial-citas');
+            const fechaInicio = document.getElementById('fecha-inicio-historial').value;
+            const fechaFin = document.getElementById('fecha-fin-historial').value;
+            
+            if (tabla.rows.length <= 1) {
+                mostrarAlerta('No hay datos para exportar', 'warning');
+                return;
+            }
+            
+            // Crear elemento temporal para el PDF
+            const divPDF = document.createElement('div');
+            divPDF.className = 'pdf-export';
+            
+            // Agregar título
+            const titulo = document.createElement('h2');
+            titulo.className = 'pdf-title';
+            titulo.textContent = `Historial de Citas - ${profesionalActual.user.primer_nombre} ${profesionalActual.user.primer_apellido}`;
+            divPDF.appendChild(titulo);
+            
+            // Agregar subtítulo con fechas
+            const subtitulo = document.createElement('h4');
+            subtitulo.className = 'pdf-subtitle';
+            subtitulo.textContent = `Del ${fechaInicio} al ${fechaFin}`;
+            divPDF.appendChild(subtitulo);
+            
+            // Crear tabla para PDF
+            const tablaPDF = document.createElement('table');
+            tablaPDF.className = 'pdf-table';
+            
+            // Agregar encabezados
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            
+            ['Fecha', 'Hora', 'Paciente', 'Descripción', 'Estado', 'Observaciones'].forEach(texto => {
+                const th = document.createElement('th');
+                th.textContent = texto;
+                trHead.appendChild(th);
+            });
+            
+            thead.appendChild(trHead);
+            tablaPDF.appendChild(thead);
+            
+            // Agregar filas de datos
+            const tbody = document.createElement('tbody');
+            
+            Array.from(tabla.querySelectorAll('tbody tr')).forEach(fila => {
+                const celdas = fila.querySelectorAll('td');
+                const tr = document.createElement('tr');
+                
+                // Fecha
+                const tdFecha = document.createElement('td');
+                tdFecha.textContent = celdas[0].textContent;
+                tr.appendChild(tdFecha);
+                
+                // Hora
+                const tdHora = document.createElement('td');
+                tdHora.textContent = celdas[1].textContent;
+                tr.appendChild(tdHora);
+                
+                // Paciente
+                const tdPaciente = document.createElement('td');
+                tdPaciente.textContent = celdas[2].textContent;
+                tr.appendChild(tdPaciente);
+                
+                // Descripción
+                const tdDescripcion = document.createElement('td');
+                tdDescripcion.textContent = celdas[3].textContent;
+                tr.appendChild(tdDescripcion);
+                
+                // Estado
+                const tdEstado = document.createElement('td');
+                const badge = document.createElement('span');
+                badge.className = 'pdf-badge';
+                badge.style.backgroundColor = celdas[4].querySelector('.badge').style.backgroundColor;
+                badge.textContent = celdas[4].querySelector('.badge').textContent;
+                tdEstado.appendChild(badge);
+                tr.appendChild(tdEstado);
+                
+                // Observaciones
+                const tdObservaciones = document.createElement('td');
+                tdObservaciones.textContent = celdas[5].textContent;
+                tr.appendChild(tdObservaciones);
+                
+                tbody.appendChild(tr);
+            });
+            
+            tablaPDF.appendChild(tbody);
+            divPDF.appendChild(tablaPDF);
+            document.body.appendChild(divPDF);
+            
+            // Configurar PDF
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const options = {
+                scale: 2,
+                useCORS: true,
+                windowWidth: divPDF.scrollWidth,
+                windowHeight: divPDF.scrollHeight
+            };
+            
+            // Convertir a imagen y agregar al PDF
+            html2canvas(divPDF, options).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = doc.internal.pageSize.getWidth() - 40;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                doc.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+                
+                // Guardar el PDF
+                const nombreArchivo = `Historial_Citas_${fechaInicio}_a_${fechaFin}.pdf`;
+                doc.save(nombreArchivo);
+                
+                // Limpiar
+                document.body.removeChild(divPDF);
+            });
+        }
+        
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            // En una aplicación real, aquí se limpiaría la sesión/token
+            window.location.href = 'login.html'; // Redirigir a login
+        }
+        
+        // Función auxiliar para obtener texto del estado de la cita
+        function obtenerTextoEstadoCita(estado) {
+            switch(estado) {
+                case 1: return 'Programada';
+                case 2: return 'Confirmada';
+                case 3: return 'Completada';
+                case 4: return 'Cancelada';
+                default: return 'Desconocido';
+            }
+        }
+        
+        // Función auxiliar para obtener clase CSS del estado de la cita
+        function obtenerClaseEstadoCita(estado) {
+            switch(estado) {
+                case 1: return 'badge-estado badge-programada';
+                case 2: return 'badge-estado badge-confirmada';
+                case 3: return 'badge-estado badge-completada';
+                case 4: return 'badge-estado badge-cancelada';
+                default: return 'badge-estado';
+            }
+        }
+        
+        // Función para mostrar alertas
+        function mostrarAlerta(mensaje, tipo) {
+            const alerta = document.createElement('div');
+            alerta.className = `alert alert-${tipo} alert-dismissible fade show`;
+            alerta.role = 'alert';
+            alerta.innerHTML = `
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Insertar al inicio del container
+            const container = document.querySelector('.container');
+            container.insertBefore(alerta, container.firstChild);
+            
+            // Auto-eliminar después de 5 segundos
+            setTimeout(() => {
+                alerta.classList.remove('show');
+                setTimeout(() => alerta.remove(), 150);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
 
 
 

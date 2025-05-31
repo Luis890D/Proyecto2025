@@ -185,6 +185,756 @@
 
 
       <!-- aca insertar el contenido de la pagina  -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Disponibilidad</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+        }
+        .calendar-title {
+            margin: 0 15px;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .calendar-day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 5px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        .calendar-day {
+            min-height: 100px;
+            padding: 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .calendar-day.disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+        .calendar-day-number {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .time-slot {
+            font-size: 0.8rem;
+            padding: 2px 5px;
+            margin: 2px 0;
+            background-color: #e2f0fd;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .time-slot.non-working {
+            background-color: #f8d7da;
+            text-decoration: line-through;
+        }
+        .time-slot-form {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .day-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        .btn-day-action {
+            padding: 0.15rem 0.3rem;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gestión de Disponibilidad</h1>
+            <button class="btn btn-outline-secondary" id="btn-cerrar-sesion">Cerrar Sesión</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Configurar Horarios</h5>
+            </div>
+            <div class="card-body">
+                <!-- Selector de mes y año -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="mes-selector" class="form-label">Mes y Año</label>
+                        <input type="month" class="form-control" id="mes-selector">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <button class="btn btn-primary me-2" id="btn-cargar-mes">Cargar Mes</button>
+                        <button class="btn btn-success" id="btn-guardar-todo">Guardar Todo</button>
+                    </div>
+                </div>
+
+                <!-- Calendario -->
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button class="btn btn-sm btn-outline-primary" id="btn-mes-anterior">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <h5 class="calendar-title" id="mes-actual">Mes Actual</h5>
+                            <button class="btn btn-sm btn-outline-primary" id="btn-mes-siguiente">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary" id="btn-config-rapida">
+                                <i class="bi bi-gear"></i> Configuración Rápida
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-grid" id="dias-semana-header">
+                        <div class="calendar-day-header">Domingo</div>
+                        <div class="calendar-day-header">Lunes</div>
+                        <div class="calendar-day-header">Martes</div>
+                        <div class="calendar-day-header">Miércoles</div>
+                        <div class="calendar-day-header">Jueves</div>
+                        <div class="calendar-day-header">Viernes</div>
+                        <div class="calendar-day-header">Sábado</div>
+                    </div>
+
+                    <div class="calendar-grid" id="calendario-dias">
+                        <!-- Los días del mes se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Formulario para editar horarios -->
+                <div class="time-slot-form" id="form-editar-horario" style="display: none;">
+                    <h5>Editar Horario: <span id="fecha-seleccionada"></span></h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de Día</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="tipo-dia" id="tipo-laboral" value="laboral" checked>
+                                    <label class="form-check-label" for="tipo-laboral">Día Laboral</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="tipo-dia" id="tipo-no-laboral" value="no_laboral">
+                                    <label class="form-check-label" for="tipo-no-laboral">Día No Laboral</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="horario-laboral-container">
+                            <div class="mb-3">
+                                <label for="hora-inicio" class="form-label">Hora de Inicio</label>
+                                <input type="time" class="form-control" id="hora-inicio" value="08:00">
+                            </div>
+                            <div class="mb-3">
+                                <label for="hora-fin" class="form-label">Hora de Fin</label>
+                                <input type="time" class="form-control" id="hora-fin" value="17:00">
+                            </div>
+                            <div class="mb-3">
+                                <label for="duracion-cita" class="form-label">Duración de Citas (minutos)</label>
+                                <select class="form-select" id="duracion-cita">
+                                    <option value="15">15 minutos</option>
+                                    <option value="30" selected>30 minutos</option>
+                                    <option value="45">45 minutos</option>
+                                    <option value="60">60 minutos</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
+                        <button class="btn btn-primary" id="btn-guardar-horario">Guardar Horario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Configuración Rápida -->
+        <div class="modal fade" id="configRapidaModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Configuración Rápida</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Aplicar a:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-lunes" checked>
+                                <label class="form-check-label" for="aplicar-lunes">Lunes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-martes" checked>
+                                <label class="form-check-label" for="aplicar-martes">Martes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-miercoles" checked>
+                                <label class="form-check-label" for="aplicar-miercoles">Miércoles</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-jueves" checked>
+                                <label class="form-check-label" for="aplicar-jueves">Jueves</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-viernes" checked>
+                                <label class="form-check-label" for="aplicar-viernes">Viernes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-sabado">
+                                <label class="form-check-label" for="aplicar-sabado">Sábado</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="aplicar-domingo">
+                                <label class="form-check-label" for="aplicar-domingo">Domingo</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Día</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipo-dia-rapido" id="tipo-laboral-rapido" value="laboral" checked>
+                                <label class="form-check-label" for="tipo-laboral-rapido">Día Laboral</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipo-dia-rapido" id="tipo-no-laboral-rapido" value="no_laboral">
+                                <label class="form-check-label" for="tipo-no-laboral-rapido">Día No Laboral</label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="horario-rapido-container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="hora-inicio-rapido" class="form-label">Hora de Inicio</label>
+                                    <input type="time" class="form-control" id="hora-inicio-rapido" value="08:00">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="hora-fin-rapido" class="form-label">Hora de Fin</label>
+                                    <input type="time" class="form-control" id="hora-fin-rapido" value="17:00">
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <label for="duracion-cita-rapido" class="form-label">Duración de Citas</label>
+                                <select class="form-select" id="duracion-cita-rapido">
+                                    <option value="15">15 minutos</option>
+                                    <option value="30" selected>30 minutos</option>
+                                    <option value="45">45 minutos</option>
+                                    <option value="60">60 minutos</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btn-aplicar-config-rapida">Aplicar Configuración</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script>
+        // Variables globales
+        let profesionalActual = null;
+        let mesActual = new Date();
+        let diaSeleccionado = null;
+        let horariosGuardados = {};
+        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener el ID del profesional de la sesión (simulado)
+            const profesionalId = obtenerIdProfesionalDeSesion();
+            
+            // Cargar información del profesional
+            cargarInformacionProfesional(profesionalId);
+            
+            // Configurar mes actual
+            const hoy = new Date();
+            mesActual = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+            actualizarSelectorMes();
+            cargarCalendario();
+            
+            // Asignar eventos
+            document.getElementById('mes-selector').addEventListener('change', function() {
+                const [year, month] = this.value.split('-');
+                mesActual = new Date(year, month - 1, 1);
+                cargarCalendario();
+            });
+            
+            document.getElementById('btn-cargar-mes').addEventListener('click', function() {
+                cargarHorariosMes();
+            });
+            
+            document.getElementById('btn-guardar-todo').addEventListener('click', function() {
+                guardarHorariosMes();
+            });
+            
+            document.getElementById('btn-mes-anterior').addEventListener('click', function() {
+                mesActual.setMonth(mesActual.getMonth() - 1);
+                actualizarSelectorMes();
+                cargarCalendario();
+                cargarHorariosMes();
+            });
+            
+            document.getElementById('btn-mes-siguiente').addEventListener('click', function() {
+                mesActual.setMonth(mesActual.getMonth() + 1);
+                actualizarSelectorMes();
+                cargarCalendario();
+                cargarHorariosMes();
+            });
+            
+            document.getElementById('btn-config-rapida').addEventListener('click', function() {
+                const modal = new bootstrap.Modal(document.getElementById('configRapidaModal'));
+                modal.show();
+            });
+            
+            document.getElementById('btn-aplicar-config-rapida').addEventListener('click', function() {
+                aplicarConfiguracionRapida();
+            });
+            
+            document.getElementById('tipo-no-laboral').addEventListener('change', function() {
+                document.getElementById('horario-laboral-container').style.display = 
+                    this.checked ? 'none' : 'block';
+            });
+            
+            document.getElementById('tipo-no-laboral-rapido').addEventListener('change', function() {
+                document.getElementById('horario-rapido-container').style.display = 
+                    this.checked ? 'none' : 'block';
+            });
+            
+            document.getElementById('btn-cancelar-edicion').addEventListener('click', function() {
+                document.getElementById('form-editar-horario').style.display = 'none';
+                diaSeleccionado = null;
+            });
+            
+            document.getElementById('btn-guardar-horario').addEventListener('click', function() {
+                guardarHorarioDia();
+            });
+            
+            document.getElementById('btn-cerrar-sesion').addEventListener('click', cerrarSesion);
+        });
+        
+        // Función simulada para obtener el ID del profesional de la sesión
+        function obtenerIdProfesionalDeSesion() {
+            // En una aplicación real, esto vendría de la sesión/cookie/token
+            return 1; // Simulamos que el profesional con ID 1 está logueado
+        }
+        
+        // Función para cargar información del profesional
+        async function cargarInformacionProfesional(profesionalId) {
+            try {
+                const response = await fetch(`/api/profesionales/${profesionalId}`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar información del profesional');
+                }
+                
+                profesionalActual = await response.json();
+            } catch (error) {
+                console.error('Error al cargar información del profesional:', error);
+                mostrarAlerta('Error al cargar información del profesional', 'danger');
+            }
+        }
+        
+        // Función para actualizar el selector de mes
+        function actualizarSelectorMes() {
+            const year = mesActual.getFullYear();
+            const month = (mesActual.getMonth() + 1).toString().padStart(2, '0');
+            document.getElementById('mes-selector').value = `${year}-${month}`;
+            document.getElementById('mes-actual').textContent = 
+                mesActual.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+        }
+        
+        // Función para cargar el calendario
+        function cargarCalendario() {
+            const calendario = document.getElementById('calendario-dias');
+            calendario.innerHTML = '';
+            
+            const primerDiaMes = new Date(mesActual.getFullYear(), mesActual.getMonth(), 1);
+            const ultimoDiaMes = new Date(mesActual.getFullYear(), mesActual.getMonth() + 1, 0);
+            
+            // Ajustar para comenzar la semana en lunes (1) en lugar de domingo (0)
+            let diaInicioSemana = primerDiaMes.getDay();
+            diaInicioSemana = diaInicioSemana === 0 ? 6 : diaInicioSemana - 1;
+            
+            // Agregar días vacíos si el mes no comienza en lunes
+            for (let i = 0; i < diaInicioSemana; i++) {
+                const diaVacio = document.createElement('div');
+                diaVacio.className = 'calendar-day disabled';
+                calendario.appendChild(diaVacio);
+            }
+            
+            // Agregar los días del mes
+            for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
+                const fecha = new Date(mesActual.getFullYear(), mesActual.getMonth(), dia);
+                const diaSemana = fecha.getDay();
+                
+                const diaElemento = document.createElement('div');
+                diaElemento.className = 'calendar-day';
+                if (diaSemana === 0 || diaSemana === 6) {
+                    diaElemento.classList.add('weekend-day');
+                }
+                
+                diaElemento.innerHTML = `
+                    <div class="calendar-day-number">${dia}</div>
+                    <div class="time-slots-container" id="slots-${fecha.toISOString().split('T')[0]}"></div>
+                    <div class="day-controls">
+                        <button class="btn btn-sm btn-day-action btn-outline-primary editar-dia" data-fecha="${fecha.toISOString().split('T')[0]}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-day-action btn-outline-danger limpiar-dia" data-fecha="${fecha.toISOString().split('T')[0]}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                calendario.appendChild(diaElemento);
+            }
+            
+            // Asignar eventos a los botones de los días
+            document.querySelectorAll('.editar-dia').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editarHorarioDia(this.dataset.fecha);
+                });
+            });
+            
+            document.querySelectorAll('.limpiar-dia').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    limpiarHorarioDia(this.dataset.fecha);
+                });
+            });
+        }
+        
+        // Función para cargar los horarios del mes
+        async function cargarHorariosMes() {
+            if (!profesionalActual) return;
+            
+            try {
+                const year = mesActual.getFullYear();
+                const month = mesActual.getMonth() + 1;
+                
+                const response = await fetch(`/api/horarios/profesional/${profesionalActual.profesional_id}?year=${year}&month=${month}`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar horarios del mes');
+                }
+                
+                const horarios = await response.json();
+                horariosGuardados = {};
+                
+                // Organizar horarios por fecha
+                horarios.forEach(horario => {
+                    const fecha = horario.fecha.split('T')[0];
+                    if (!horariosGuardados[fecha]) {
+                        horariosGuardados[fecha] = [];
+                    }
+                    horariosGuardados[fecha].push(horario);
+                });
+                
+                // Mostrar horarios en el calendario
+                Object.keys(horariosGuardados).forEach(fecha => {
+                    mostrarHorariosDia(fecha, horariosGuardados[fecha]);
+                });
+                
+                mostrarAlerta('Horarios del mes cargados correctamente', 'success');
+            } catch (error) {
+                console.error('Error al cargar horarios del mes:', error);
+                mostrarAlerta('Error al cargar horarios del mes', 'danger');
+            }
+        }
+        
+        // Función para mostrar los horarios de un día específico
+        function mostrarHorariosDia(fecha, horarios) {
+            const container = document.getElementById(`slots-${fecha}`);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Verificar si es día no laboral
+            const diaNoLaboral = horarios.some(h => h.tipo === 'no_laboral');
+            
+            if (diaNoLaboral) {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot non-working';
+                slot.textContent = 'Día no laboral';
+                container.appendChild(slot);
+                return;
+            }
+            
+            // Mostrar slots para días laborales
+            horarios.forEach(horario => {
+                if (horario.tipo === 'laboral') {
+                    const inicio = new Date(horario.hora_inicio);
+                    const fin = new Date(horario.hora_finalizacion);
+                    
+                    const slot = document.createElement('div');
+                    slot.className = 'time-slot';
+                    slot.textContent = `${inicio.getHours().toString().padStart(2, '0')}:${inicio.getMinutes().toString().padStart(2, '0')} - ${fin.getHours().toString().padStart(2, '0')}:${fin.getMinutes().toString().padStart(2, '0')}`;
+                    container.appendChild(slot);
+                }
+            });
+        }
+        
+        // Función para editar el horario de un día
+        function editarHorarioDia(fecha) {
+            diaSeleccionado = fecha;
+            
+            const fechaObj = new Date(fecha);
+            document.getElementById('fecha-seleccionada').textContent = 
+                `${fechaObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}`;
+            
+            // Verificar si ya hay horarios guardados para este día
+            if (horariosGuardados[fecha] && horariosGuardados[fecha].length > 0) {
+                const esNoLaboral = horariosGuardados[fecha].some(h => h.tipo === 'no_laboral');
+                
+                if (esNoLaboral) {
+                    document.getElementById('tipo-no-laboral').checked = true;
+                    document.getElementById('horario-laboral-container').style.display = 'none';
+                } else {
+                    document.getElementById('tipo-laboral').checked = true;
+                    document.getElementById('horario-laboral-container').style.display = 'block';
+                    
+                    // Tomar el primer horario laboral (asumimos solo uno por día)
+                    const horario = horariosGuardados[fecha].find(h => h.tipo === 'laboral');
+                    if (horario) {
+                        const inicio = new Date(horario.hora_inicio);
+                        const fin = new Date(horario.hora_finalizacion);
+                        
+                        document.getElementById('hora-inicio').value = 
+                            `${inicio.getHours().toString().padStart(2, '0')}:${inicio.getMinutes().toString().padStart(2, '0')}`;
+                        document.getElementById('hora-fin').value = 
+                            `${fin.getHours().toString().padStart(2, '0')}:${fin.getMinutes().toString().padStart(2, '0')}`;
+                    }
+                }
+            } else {
+                // Valores por defecto
+                document.getElementById('tipo-laboral').checked = true;
+                document.getElementById('horario-laboral-container').style.display = 'block';
+                document.getElementById('hora-inicio').value = '08:00';
+                document.getElementById('hora-fin').value = '17:00';
+            }
+            
+            document.getElementById('form-editar-horario').style.display = 'block';
+        }
+        
+        // Función para limpiar el horario de un día
+        function limpiarHorarioDia(fecha) {
+            if (confirm('¿Está seguro de eliminar todos los horarios para este día?')) {
+                delete horariosGuardados[fecha];
+                const container = document.getElementById(`slots-${fecha}`);
+                if (container) {
+                    container.innerHTML = '';
+                }
+                mostrarAlerta('Horarios del día eliminados', 'success');
+            }
+        }
+        
+        // Función para guardar el horario de un día
+        function guardarHorarioDia() {
+            if (!diaSeleccionado) return;
+            
+            const esNoLaboral = document.getElementById('tipo-no-laboral').checked;
+            
+            if (esNoLaboral) {
+                horariosGuardados[diaSeleccionado] = [{
+                    fecha: diaSeleccionado,
+                    tipo: 'no_laboral',
+                    hora_inicio: null,
+                    hora_finalizacion: null
+                }];
+            } else {
+                const horaInicio = document.getElementById('hora-inicio').value;
+                const horaFin = document.getElementById('hora-fin').value;
+                const duracion = parseInt(document.getElementById('duracion-cita').value);
+                
+                // Validar horarios
+                if (horaInicio >= horaFin) {
+                    mostrarAlerta('La hora de fin debe ser posterior a la hora de inicio', 'warning');
+                    return;
+                }
+                
+                // Crear el horario laboral
+                horariosGuardados[diaSeleccionado] = [{
+                    fecha: diaSeleccionado,
+                    tipo: 'laboral',
+                    hora_inicio: `${diaSeleccionado}T${horaInicio}:00`,
+                    hora_finalizacion: `${diaSeleccionado}T${horaFin}:00`,
+                    duracion_cita: duracion
+                }];
+            }
+            
+            // Actualizar la vista
+            mostrarHorariosDia(diaSeleccionado, horariosGuardados[diaSeleccionado]);
+            document.getElementById('form-editar-horario').style.display = 'none';
+            diaSeleccionado = null;
+            
+            mostrarAlerta('Horario guardado correctamente', 'success');
+        }
+        
+        // Función para guardar todos los horarios del mes
+        async function guardarHorariosMes() {
+            if (!profesionalActual) return;
+            
+            try {
+                const horariosParaGuardar = [];
+                Object.keys(horariosGuardados).forEach(fecha => {
+                    horariosGuardados[fecha].forEach(horario => {
+                        horariosParaGuardar.push({
+                            profesional_id: profesionalActual.profesional_id,
+                            fecha: fecha,
+                            hora_inicio: horario.hora_inicio,
+                            hora_finalizacion: horario.hora_finalizacion,
+                            tipo: horario.tipo
+                        });
+                    });
+                });
+                
+                const response = await fetch('/api/horarios/mes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        profesional_id: profesionalActual.profesional_id,
+                        mes: mesActual.getMonth() + 1,
+                        anio: mesActual.getFullYear(),
+                        horarios: horariosParaGuardar
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al guardar horarios');
+                }
+                
+                mostrarAlerta('Horarios del mes guardados correctamente', 'success');
+            } catch (error) {
+                console.error('Error al guardar horarios del mes:', error);
+                mostrarAlerta('Error al guardar horarios del mes: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para aplicar configuración rápida
+        function aplicarConfiguracionRapida() {
+            const diasSeleccionados = {
+                0: document.getElementById('aplicar-domingo').checked,
+                1: document.getElementById('aplicar-lunes').checked,
+                2: document.getElementById('aplicar-martes').checked,
+                3: document.getElementById('aplicar-miercoles').checked,
+                4: document.getElementById('aplicar-jueves').checked,
+                5: document.getElementById('aplicar-viernes').checked,
+                6: document.getElementById('aplicar-sabado').checked
+            };
+            
+            const esNoLaboral = document.getElementById('tipo-no-laboral-rapido').checked;
+            const horaInicio = document.getElementById('hora-inicio-rapido').value;
+            const horaFin = document.getElementById('hora-fin-rapido').value;
+            const duracion = parseInt(document.getElementById('duracion-cita-rapido').value);
+            
+            // Validar horarios si es día laboral
+            if (!esNoLaboral && horaInicio >= horaFin) {
+                mostrarAlerta('La hora de fin debe ser posterior a la hora de inicio', 'warning');
+                return;
+            }
+            
+            // Aplicar a todos los días del mes que coincidan con los seleccionados
+            const ultimoDiaMes = new Date(mesActual.getFullYear(), mesActual.getMonth() + 1, 0).getDate();
+            
+            for (let dia = 1; dia <= ultimoDiaMes; dia++) {
+                const fecha = new Date(mesActual.getFullYear(), mesActual.getMonth(), dia);
+                const diaSemana = fecha.getDay();
+                
+                if (diasSeleccionados[diaSemana]) {
+                    const fechaStr = fecha.toISOString().split('T')[0];
+                    
+                    if (esNoLaboral) {
+                        horariosGuardados[fechaStr] = [{
+                            fecha: fechaStr,
+                            tipo: 'no_laboral',
+                            hora_inicio: null,
+                            hora_finalizacion: null
+                        }];
+                    } else {
+                        horariosGuardados[fechaStr] = [{
+                            fecha: fechaStr,
+                            tipo: 'laboral',
+                            hora_inicio: `${fechaStr}T${horaInicio}:00`,
+                            hora_finalizacion: `${fechaStr}T${horaFin}:00`,
+                            duracion_cita: duracion
+                        }];
+                    }
+                    
+                    // Actualizar la vista
+                    mostrarHorariosDia(fechaStr, horariosGuardados[fechaStr]);
+                }
+            }
+            
+            // Cerrar modal
+            bootstrap.Modal.getInstance(document.getElementById('configRapidaModal')).hide();
+            mostrarAlerta('Configuración rápida aplicada correctamente', 'success');
+        }
+        
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            // En una aplicación real, aquí se limpiaría la sesión/token
+            window.location.href = 'login.html'; // Redirigir a login
+        }
+        
+        // Función para mostrar alertas
+        function mostrarAlerta(mensaje, tipo) {
+            const alerta = document.createElement('div');
+            alerta.className = `alert alert-${tipo} alert-dismissible fade show`;
+            alerta.role = 'alert';
+            alerta.innerHTML = `
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Insertar al inicio del container
+            const container = document.querySelector('.container');
+            container.insertBefore(alerta, container.firstChild);
+            
+            // Auto-eliminar después de 5 segundos
+            setTimeout(() => {
+                alerta.classList.remove('show');
+                setTimeout(() => alerta.remove(), 150);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
+
 
 
 
