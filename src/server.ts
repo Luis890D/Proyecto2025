@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../FrontEnd')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Rutas API
 app.use("/api/citas", citasRoutes);
