@@ -28,7 +28,7 @@ document.querySelector('.user').addEventListener('submit', async function (e) {
 
         // Redirigir o mostrar mensaje
         alert('¡Inicio de sesión exitoso!');
-        window.location.href = "/dashboard.html"; // Redirigir si es necesario
+        window.location.href = "pages/dashboard.html"; // Redirigir si es necesario
 
     } catch (error) {
         console.error('Error:', error);
