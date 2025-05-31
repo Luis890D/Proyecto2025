@@ -190,31 +190,90 @@
 
 
    
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs" id="misPestanias" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="citas-tab" data-bs-toggle="tab" data-bs-target="#citas-programadas" type="button" role="tab">Citas Programadas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="horarios-tab" data-bs-toggle="tab" data-bs-target="#horarios-config" type="button" role="tab">Configurar Horarios</button>
+    </li>
+</ul>
 
+<!-- Contenido de las pestañas -->
+<div class="tab-content mt-3" id="contenidoPestanias">
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">Citas Programadas</h5>
+    <!-- Pestaña: Citas Programadas -->
+    <div class="tab-pane fade show active" id="citas-programadas" role="tabpanel" aria-labelledby="citas-tab">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Citas Programadas</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-citas-programadas">
+                            <!-- Las citas programadas se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Paciente</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-citas-programadas">
-                    <!-- Las citas programadas se cargarán aquí -->
-                </tbody>
-            </table>
+
+    <!-- Pestaña: Configurar Horarios -->
+    
+</div>
+
+<!-- Modal: Agregar/Editar Horario -->
+<div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalHorarioTitulo">Nuevo Horario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-horario">
+                    <input type="hidden" id="horario-id">
+                    <div class="mb-3">
+                        <label for="fecha-horario" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="fecha-horario" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hora-inicio" class="form-label">Hora Inicio</label>
+                        <input type="time" class="form-control" id="hora-inicio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hora-fin" class="form-label">Hora Fin</label>
+                        <input type="time" class="form-control" id="hora-fin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipo-horario" class="form-label">Tipo</label>
+                        <select class="form-select" id="tipo-horario" required>
+                            <option value="laboral">Día Laboral</option>
+                            <option value="no_laboral">Día No Laboral</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btn-guardar-horario">Guardar</button>
+            </div>
         </div>
     </div>
 </div>
+
 
 
 
@@ -267,7 +326,8 @@ function obtenerClaseEstadoCita(estado) {
 </script>
 
 
-<script src="../assets/js/historial/historial.js"></script>
+<script src="../assets/js/disponibilidad/disponibilidad.js"></script>
+<script src="../assets/js/disponibilidad/disponibilidadProfesional.js"></script>
 
 
             
