@@ -328,7 +328,6 @@
                                     <tr>
                                         <th>Fecha</th>
                                         <th>Hora</th>
-                                        <th>Descripción</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -382,8 +381,6 @@
                                     <tr>
                                         <th>Fecha</th>
                                         <th>Hora</th>
-                                        <th>Paciente</th>
-                                        <th>Descripción</th>
                                         <th>Estado</th>
                                         <th>Observaciones</th>
                                     </tr>
@@ -534,7 +531,6 @@
                         <td>${fecha.toLocaleDateString('es-ES')}</td>
                         <td>${horaInicio.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})} - ${horaFin.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</td>
                         <td>${cita.cliente.primer_nombre} ${cita.cliente.primer_apellido}</td>
-                        <td>${cita.descripcion}</td>
                         <td><span class="badge rounded-pill ${obtenerClaseEstadoCita(cita.cita_estado)}">${obtenerTextoEstadoCita(cita.cita_estado)}</span></td>
                         <td>
                             <button class="btn btn-sm btn-info ver-detalle" data-id="${cita.cita_id}">Detalle</button>
@@ -587,7 +583,6 @@
                         <td>${fecha.toLocaleDateString('es-ES')}</td>
                         <td>${horaInicio.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})} - ${horaFin.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</td>
                         <td>${cita.cliente.primer_nombre} ${cita.cliente.primer_apellido}</td>
-                        <td>${cita.descripcion}</td>
                         <td><span class="badge rounded-pill ${obtenerClaseEstadoCita(cita.cita_estado)}">${obtenerTextoEstadoCita(cita.cita_estado)}</span></td>
                         <td>${cita.observaciones || 'Ninguna'}</td>
                     `;
@@ -616,15 +611,12 @@
                         <p><strong>Estado:</strong> <span class="badge ${obtenerClaseEstadoCita(cita.cita_estado)}">${obtenerTextoEstadoCita(cita.cita_estado)}</span></p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Paciente:</strong> ${cita.cliente.primer_nombre} ${cita.cliente.primer_apellido}</p>
                         <p><strong>Teléfono:</strong> ${cita.cliente.telefono || 'No disponible'}</p>
                         <p><strong>Email:</strong> ${cita.cliente.email || 'No disponible'}</p>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
-                        <p><strong>Descripción:</strong></p>
-                        <p>${cita.descripcion}</p>
                     </div>
                 </div>
                 <div class="row mt-3">
@@ -785,7 +777,7 @@
             const thead = document.createElement('thead');
             const trHead = document.createElement('tr');
             
-            ['Fecha', 'Hora', 'Paciente', 'Descripción', 'Estado', 'Observaciones'].forEach(texto => {
+            ['Fecha', 'Hora', 'Estado', 'Observaciones'].forEach(texto => {
                 const th = document.createElement('th');
                 th.textContent = texto;
                 trHead.appendChild(th);
@@ -810,17 +802,7 @@
                 const tdHora = document.createElement('td');
                 tdHora.textContent = celdas[1].textContent;
                 tr.appendChild(tdHora);
-                
-                // Paciente
-                const tdPaciente = document.createElement('td');
-                tdPaciente.textContent = celdas[2].textContent;
-                tr.appendChild(tdPaciente);
-                
-                // Descripción
-                const tdDescripcion = document.createElement('td');
-                tdDescripcion.textContent = celdas[3].textContent;
-                tr.appendChild(tdDescripcion);
-                
+
                 // Estado
                 const tdEstado = document.createElement('td');
                 const badge = document.createElement('span');
