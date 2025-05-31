@@ -1,0 +1,105 @@
+este archivo me permite saber como tiene que ir el html para hacer una tabla con varias pestañas tranquila 
+
+
+
+   
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs" id="misPestanias" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="citas-tab" data-bs-toggle="tab" data-bs-target="#citas-programadas" type="button" role="tab">Citas Programadas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="horarios-tab" data-bs-toggle="tab" data-bs-target="#horarios-config" type="button" role="tab">Configurar Horarios</button>
+    </li>
+</ul>
+
+<!-- Contenido de las pestañas -->
+<div class="tab-content mt-3" id="contenidoPestanias">
+
+    <!-- Pestaña: Citas Programadas -->
+    <div class="tab-pane fade show active" id="citas-programadas" role="tabpanel" aria-labelledby="citas-tab">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Citas Programadas</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-citas-programadas">
+                            <!-- Las citas programadas se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestaña: Configurar Horarios -->
+    
+</div>
+
+
+
+
+
+
+<script>
+async function cargarCitasProgramadas(profesionalId) {
+    try {
+        // Obtener citas programadas (estado 1: programada, 2: confirmada)
+        const response = await fetch(`/api/citas?profesional_id=${profesionalId}&estado=1,2`);
+        if (!response.ok) {
+            throw new Error('Error al cargar citas programadas');
+        }
+        
+        const citas = await response.json();
+        const tabla = document.getElementById('tabla-citas-programadas');
+        tabla.innerHTML = '';
+        
+        if (citas.length === 0) {
+            tabla.innerHTML = '<tr><td colspan="6" class="text-center">No hay citas programadas</td></tr>';
+            return;
+        }
+        
+        citas.forEach(cita => {
+            const fecha = new Date(cita.fecha_inicio);
+            const horaInicio = new Date(cita.fecha_inicio);
+            const horaFin = new Date(cita.fecha_finalizacion);
+            
+    
+
+        });
+    } catch (error) {
+        console.error('Error al cargar citas programadas:', error);
+        mostrarAlerta('Error al cargar citas programadas', 'danger');
+    }
+}
+
+
+
+// Función auxiliar para obtener clase CSS del estado de la cita
+function obtenerClaseEstadoCita(estado) {
+    switch(estado) {
+        case 1: return 'badge-estado badge-programada';
+        case 2: return 'badge-estado badge-confirmada';
+        case 3: return 'badge-estado badge-completada';
+        case 4: return 'badge-estado badge-cancelada';
+        default: return 'badge-estado';
+    }
+}
+
+</script>
+
+
+<script src="../assets/js/disponibilidad/disponibilidad.js"></script>
+<script src="../assets/js/disponibilidad/disponibilidadProfesional.js"></script>
+
